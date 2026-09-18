@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>トピア弾幕プレビュー</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+background:#101116;
+color:#fff;
+font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif;
+}
+
+main{
+max-width:800px;
+margin:auto;
+padding:18px;
+}
+
+h1{
+font-size:24px;
+margin:5px 0;
+}
+
+.sub{
+font-size:13px;
+color:#aaa;
+margin-bottom:16px;
+}
+
+textarea{
+width:100%;
+height:180px;
+background:#1b1d26;
+color:#fff;
+border:1px solid #444;
+border-radius:14px;
+padding:14px;
+font-size:16px;
+line-height:1.5;
+}
+
+.info{
+display:flex;
+justify-content:space-between;
+font-size:13px;
+color:#aaa;
+margin:8px 2px 15px;
+}
+
+.warning{
+color:#ffd166;
+}
+
+.stage{
+position:relative;
+min-height:350px;
+border-radius:18px;
+overflow:hidden;
+border:1px solid #3b3d49;
+background:
+radial-gradient(circle at 20% 20%,#3b4057 0,transparent 30%),
+radial-gradient(circle at 80% 80%,#392d4b 0,transparent 30%),
+linear-gradient(145deg,#242735,#111218);
+}
+
+.stageTitle{
+position:absolute;
+top:12px;
+left:14px;
+font-size:12px;
+color:#999;
+}
+
+#preview{
+position:absolute;
+top:65px;
+left:5px;
+right:5px;
+text-align:center;
+white-space:pre-wrap;
+overflow-wrap:anywhere;
+line-height:1.2;
+text-shadow:
+0 2px 3px #000,
+0 0 8px rgba(255,255,255,.15);
+}
+
+.buttons{
+display:flex;
+gap:8px;
+margin-top:14px;
+}
+
+button{
+flex:1;
+padding:12px;
+border:0;
+border-radius:12px;
+font-size:15px;
+font-weight:bold;
+}
+
+.copy{
+background:#ff8eb8;
+color:#111;
+}
+
+.clear{
+background:#30333f;
+color:#fff;
+}
+</style>
+</head>
+
+<body>
+
+<main>
+
+<h1>✨ トピア弾幕プレビュー</h1>
+
+<div class="sub">
+\ua・color・size・b・i・特殊文字を簡易プレビュー
+</div>
+
+<textarea id="code" spellcheck="false">\ua<i><size=60><color=#a8f>꙰♡✺꙰</color><color=#f9d>👏ゆ⃟ず⃟き⃟👏</color><color=#0fa>꙰♡✺꙰</color></size></i></textarea>
+
+<div class="info">
+<span id="counter">0文字</span>
+<span id="warning"></span>
+</div>
+
+<div class="stage">
+
+<div class="stageTitle">
+TOPIA風プレビュー
+</div>
+
+<div id="preview"></div>
+
+</div>
+
+<div class="buttons">
+
+<button class="copy" id="copy">
+コードをコピー
+</button>
+
+<button class="clear" id="clear">
+クリア
+</button>
+
+</div>
+
+</main>
+
+<script>
+
+const input=document.getElementById("code");
+const preview=document.getElementById("preview");
+const counter=document.getElementById("counter");
+const warning=document.getElementById("warning");
+
+function escapeHTML(text){
+
+return text
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;");
+
+}
+
+function render(){
+
+let raw=input.value;
+
+let output="";
+let last=0;
+
+const tag=
+/(\\ua|<\/?b>|<\/?i>|<size=([^>]+)>|<\/size>|<color=([^>]+)>|<\/color>)/gi;
+
+let match;
+
+while((match=tag.exec(raw))!==null){
+
+output+=escapeHTML(
+raw.substring(last,match.index)
+);
+
+let t=match[0].toLowerCase();
+
+if(t==="\\ua"){
+
+output+="<br>";
+
+}
+
+else if(t==="<b>"){
+
+output+="<b>";
+
+}
+
+else if(t==="</b>"){
+
+output+="</b>";
+
+}
+
+else if(t==="<i>"){
+
+output+="<i>";
+
+}
+
+else if(t==="</i>"){
+
+output+="</i>";
+
+}
+
+else if(t.startsWith("<size=")){
+
+let size=parseFloat(match[2]);
+
+if(isNaN(size)) size=40;
+
+let px=size*0.72;
+
+if(px>100) px=100;
+if(px<10) px=10;
+
+output+=
+'<span style="font-size:'+px+'px">';
+
+}
+
+else if(t==="</size>"){
+
+output+="</span>";
+
+}
+
+else if(t.startsWith("<color=")){
+
+let color=match[3];
+
+if(
+!/^#[0-9a-f]{3,8}$/i.test(color)
+&&
+!/^[a-z]+$/i.test(color)
+){
+
+color="#ffffff";
+
+}
+
+output+=
+'<span style="color:'+color+'">';
+
+}
+
+else if(t==="</color>"){
+
+output+="</span>";
+
+}
+
+last=tag.lastIndex;
+
+}
+
+output+=escapeHTML(
+raw.substring(last)
+);
+
+preview.innerHTML=output;
+
+let length=Array.from(raw).length;
+
+counter.textContent=
+"コード文字数："+length;
+
+if(length>100){
+
+warning.textContent=
+"⚠ 100文字を超えています";
+
+warning.className="warning";
+
+}else{
+
+warning.textContent="";
+
+}
+
+}
+
+input.addEventListener(
+"input",
+render
+);
+
+document
+.getElementById("clear")
+.addEventListener(
+"click",
+function(){
+
+input.value="";
+render();
+input.focus();
+
+});
+
+document
+.getElementById("copy")
+.addEventListener(
+"click",
+async function(){
+
+try{
+
+await navigator.clipboard.writeText(
+input.value
+);
+
+this.textContent=
+"コピーしました ✓";
+
+let button=this;
+
+setTimeout(function(){
+
+button.textContent=
+"コードをコピー";
+
+},1200);
+
+}
+
+catch(e){
+
+input.select();
+
+document.execCommand("copy");
+
+}
+
+});
+
+render();
+
+</script>
+
+</body>
+</html>
