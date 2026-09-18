@@ -3,320 +3,248 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>トピア弾幕プレビュー v7</title>
+<title>トピア弾幕プレビュー v8</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 :root{
   --bg:#101116;
-  --panel:#1b1d26;
-  --panel2:#171920;
-  --border:#414451;
+  --panel:#171922;
+  --panel2:#1d202b;
+  --border:#3d414e;
   --text:#fff;
-  --sub:#999;
-  --pink:#ff86b4;
+  --sub:#9ea1aa;
+  --pink:#ff83b3;
 }
 
 body{
   margin:0;
   background:var(--bg);
   color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,
-  "Hiragino Sans","Yu Gothic",sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Hiragino Sans",
+    "Hiragino Kaku Gothic ProN",
+    "Noto Sans JP",
+    sans-serif;
 }
 
 main{
   max-width:800px;
   margin:auto;
-  padding:18px;
+  padding:22px 16px 60px;
 }
 
 h1{
-  margin:5px 0;
-  font-size:24px;
+  margin:5px 0 6px;
+  font-size:25px;
 }
 
 .sub{
-  margin:5px 0 16px;
-  color:#aaa;
+  color:var(--sub);
   font-size:13px;
   line-height:1.6;
+  margin-bottom:18px;
 }
 
 textarea{
   width:100%;
-  height:165px;
-  padding:14px;
-  background:var(--panel);
-  color:#fff;
-  border:1px solid #484b57;
-  border-radius:14px;
-  font-size:16px;
-  line-height:1.5;
+  height:170px;
   resize:vertical;
+  background:#1b1d26;
+  color:#fff;
+  border:1px solid #505462;
+  border-radius:16px;
+  padding:15px;
+  font-size:16px;
+  line-height:1.55;
+  outline:none;
+}
+
+textarea:focus{
+  border-color:var(--pink);
 }
 
 .info{
   display:flex;
   justify-content:space-between;
+  align-items:center;
   gap:10px;
-  margin:8px 2px 12px;
+  margin:10px 3px 16px;
   color:#aaa;
   font-size:13px;
 }
 
-.warning{color:#ffd166}
-.danger{color:#ff7373}
-
-/* ===== SWITCH ===== */
-
-.modeRow{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin:12px 0;
+.warning{
+  color:#ffd166;
 }
 
-.switch{
-  position:relative;
-  width:48px;
-  height:27px;
-  flex:none;
+.danger{
+  color:#ff7d8b;
 }
 
-.switch input{display:none}
-
-.slider{
-  position:absolute;
-  inset:0;
-  background:#444;
-  border-radius:30px;
-  transition:.2s;
-}
-
-.slider:before{
-  content:"";
-  position:absolute;
-  width:21px;
-  height:21px;
-  left:3px;
-  top:3px;
-  background:#fff;
-  border-radius:50%;
-  transition:.2s;
-}
-
-.switch input:checked + .slider{
-  background:var(--pink);
-}
-
-.switch input:checked + .slider:before{
-  transform:translateX(21px);
-}
-
-.modeText{
-  color:#bbb;
-  font-size:14px;
-}
-
-/* ===== PREVIEW ===== */
+/* =========================
+   TOPIA風ステージ
+========================= */
 
 .stage{
   position:relative;
-  width:100%;
-  height:270px;
+  height:390px;
   overflow:hidden;
-  border:1px solid var(--border);
   border-radius:18px;
+  border:1px solid #454957;
 
   background:
-  linear-gradient(
-    rgba(10,11,15,.42),
-    rgba(10,11,15,.42)
-  ),
-  radial-gradient(
-    circle at 20% 30%,
-    #45495d,
-    transparent 40%
-  ),
-  radial-gradient(
-    circle at 80% 75%,
-    #493450,
-    transparent 42%
-  ),
-  #20222c;
+    radial-gradient(
+      circle at 15% 15%,
+      rgba(83,91,125,.40),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 85% 85%,
+      rgba(80,55,96,.35),
+      transparent 38%
+    ),
+    linear-gradient(
+      145deg,
+      #222531,
+      #15161d
+    );
 }
 
 .stageTitle{
   position:absolute;
-  top:10px;
-  left:13px;
-  color:#aaa;
+  top:13px;
+  left:14px;
+  color:#a6a8af;
   font-size:12px;
-  z-index:10;
+  z-index:5;
 }
 
-#previewViewport{
-  position:absolute;
-  left:18px;
-  right:18px;
-  top:40px;
-  bottom:10px;
-  overflow:visible;
-}
-
-#preview{
+.viewport{
   position:absolute;
   left:0;
-  top:50%;
-  transform:translateY(-50%);
-  transform-origin:left center;
-  white-space:nowrap;
-  line-height:1;
-  text-align:left;
-
-  text-shadow:
-  0 2px 3px rgba(0,0,0,.9),
-  0 0 5px rgba(255,255,255,.08);
+  top:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
 }
 
-/* ===== SPECIAL UNICODE ===== */
+/*
+ TOPIAのコメント表示は中央揃えではなく
+ 左側を基準として横方向へ伸びるように再現。
+*/
+#preview{
+  position:absolute;
+  left:28px;
+  top:105px;
 
-.fx{
   display:inline-block;
+
+  white-space:pre;
+  text-align:left;
+
+  line-height:1;
+
+  transform-origin:left center;
+
+  text-shadow:
+    0 2px 2px rgba(0,0,0,.95),
+    0 4px 5px rgba(0,0,0,.55);
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Hiragino Sans",
+    "Hiragino Kaku Gothic ProN",
+    sans-serif;
+}
+
+/* 通常文字 */
+.normal-char{
   position:relative;
-  transform-origin:center center;
+  display:inline-block;
   vertical-align:baseline;
 }
 
 /*
-  重要:
-  transformで見た目だけ動かし、
-  元の文字幅は基本的に維持する。
+ 特殊Unicode。
+
+ Safariの通常のUnicode合成に完全依存すると
+ TOPIAとの差が大きくなるため、
+ 特殊文字だけ独立した描画要素として扱う。
 */
-
-.fx-1{}
-.fx-2{}
-.fx-8sub{}
-.fx-8sup{}
-
-/* ===== PANELS ===== */
-
-.panel{
-  margin-top:14px;
-  padding:14px;
-  background:var(--panel2);
-  border:1px solid #30333d;
-  border-radius:14px;
+.special-char{
+  position:relative;
+  display:inline-block;
+  vertical-align:baseline;
+  transform-origin:center center;
 }
 
-.panelTitle{
-  margin-bottom:5px;
-  font-size:15px;
-  font-weight:bold;
+/* ᭄ */
+.fx-ornament-a{
+  margin-left:-7px;
+  margin-right:-10px;
+
+  transform:
+    translate(-2px,8px)
+    scaleX(.90)
+    scaleY(1.05);
 }
 
-.panelSub{
-  margin-bottom:13px;
-  color:#888;
-  font-size:12px;
-  line-height:1.6;
+/* ꦿૢ */
+.fx-ornament-b{
+  margin-left:-14px;
+  margin-right:-10px;
+
+  transform:
+    translate(-4px,9px)
+    scaleX(.86)
+    scaleY(.92);
 }
 
-.effectSelector{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:6px;
-  margin-bottom:15px;
+/* 下付き8 */
+.fx-sub8{
+  margin-left:-8px;
+  margin-right:-5px;
+
+  transform:
+    translate(-2px,13px)
+    scale(.82);
 }
 
-.effectButton{
-  padding:11px 4px;
-  border:1px solid #3c3f49;
-  border-radius:10px;
-  background:#282b35;
-  color:#fff;
-  font-size:17px;
+/* 上付き8 */
+.fx-super8{
+  margin-left:-7px;
+  margin-right:-4px;
+
+  transform:
+    translate(-1px,-17px)
+    scale(.82);
 }
 
-.effectButton.active{
-  background:#513342;
-  border-color:#ff86b4;
-  color:#ffb1cf;
+/* ⃟ */
+.fx-diamond{
+  margin-left:-7px;
+  margin-right:-7px;
+
+  transform:
+    scale(1.18);
 }
 
-.selectedInfo{
-  margin-bottom:13px;
-  padding:10px;
-  background:#111219;
-  border-radius:10px;
-  text-align:center;
-  color:#ddd;
-  font-size:13px;
+/* ꙰ */
+.fx-dot{
+  margin-left:-4px;
+  margin-right:-4px;
 }
 
-.control{
-  margin:13px 0;
-}
-
-.controlTop{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  margin-bottom:6px;
-  color:#bbb;
-  font-size:13px;
-}
-
-.controlValue{
-  color:#ff9fc3;
-  font-variant-numeric:tabular-nums;
-}
-
-input[type="range"]{
-  width:100%;
-  accent-color:#ff86b4;
-}
-
-.reset{
-  width:100%;
-  padding:11px;
-  margin-top:8px;
-  border:0;
-  border-radius:10px;
-  background:#432f38;
-  color:#ffb5cf;
-  font-size:14px;
-  font-weight:bold;
-}
-
-/* ===== GLOBAL ===== */
-
-.globalRow{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.globalRow button{
-  width:55px;
-  height:46px;
-  border:0;
-  border-radius:10px;
-  background:#30333f;
-  color:#fff;
-  font-size:24px;
-  font-weight:bold;
-}
-
-.globalValue{
-  flex:1;
-  text-align:center;
-  color:#aaa;
-}
-
-/* ===== BUTTONS ===== */
+/* =========================
+   ボタン
+========================= */
 
 .buttons{
   display:flex;
@@ -324,67 +252,103 @@ input[type="range"]{
   margin-top:14px;
 }
 
-.buttons button{
-  flex:1;
-  padding:13px;
+button{
   border:0;
-  border-radius:12px;
+  border-radius:13px;
+  padding:13px;
   font-size:15px;
-  font-weight:bold;
+  font-weight:700;
 }
 
 .copy{
-  background:#ff8eb8;
+  flex:1;
+  background:var(--pink);
   color:#111;
 }
 
 .clear{
+  flex:1;
   background:#30333f;
   color:#fff;
 }
 
-/* ===== SAMPLES ===== */
+/* =========================
+   詳細設定
+========================= */
 
-.samples{
+details{
   margin-top:18px;
-  padding:14px;
-  background:#181a22;
-  border:1px solid #30323c;
-  border-radius:14px;
+  background:var(--panel);
+  border:1px solid #373b46;
+  border-radius:16px;
+  overflow:hidden;
 }
 
-.samplesTitle{
-  margin-bottom:10px;
-  font-size:14px;
-  font-weight:bold;
+summary{
+  padding:15px;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.settings{
+  padding:0 15px 18px;
+}
+
+.setting{
+  margin:16px 0;
+}
+
+.settingHeader{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:8px;
+  color:#bbb;
+  font-size:13px;
+}
+
+input[type="range"]{
+  width:100%;
+  accent-color:var(--pink);
+}
+
+.reset{
+  width:100%;
+  margin-top:8px;
+  background:#50323e;
+  color:#ff9fc2;
+}
+
+/* =========================
+   実機確認用
+========================= */
+
+.test{
+  margin-top:18px;
+  background:var(--panel);
+  border:1px solid #373b46;
+  border-radius:16px;
+  padding:15px;
+}
+
+.test h2{
+  margin:0 0 12px;
+  font-size:16px;
 }
 
 .sample{
-  width:100%;
-  margin-top:7px;
-  padding:11px;
-  background:#292c37;
-  color:#fff;
-  border:0;
-  border-radius:10px;
-  font-size:14px;
+  background:#252834;
+  border-radius:12px;
+  padding:12px;
+  text-align:center;
+  margin-top:8px;
+  color:#ddd;
 }
 
 .note{
-  margin-top:15px;
   color:#888;
   font-size:12px;
-  line-height:1.7;
-}
-
-@media(max-width:500px){
-
-  main{padding:16px}
-
-  h1{font-size:23px}
-
-  .stage{height:250px}
-
+  line-height:1.6;
+  margin-top:14px;
 }
 </style>
 </head>
@@ -393,15 +357,15 @@ input[type="range"]{
 
 <main>
 
-<h1>✨ トピア弾幕プレビュー v7</h1>
+<h1>✨ トピア弾幕プレビュー v8</h1>
 
 <div class="sub">
-特殊Unicodeを1文字ずつ補正できる実機キャリブレーション版
+弾幕コードを貼るだけでTOPIA実機風に自動補正
 </div>
 
 <textarea
-id="code"
-spellcheck="false"
+  id="code"
+  spellcheck="false"
 ><i><size=80>ゆ<size=40>ず</size><color=#0FC>᭄</color><color=#9ff>ꦿૢ₈⁸</color></size></i></textarea>
 
 <div class="info">
@@ -409,245 +373,119 @@ spellcheck="false"
   <span id="warning"></span>
 </div>
 
-<div class="modeRow">
-
-<label class="switch">
-<input type="checkbox" id="correction" checked>
-<span class="slider"></span>
-</label>
-
-<span class="modeText">
-TOPIA特殊文字補正
-</span>
-
-</div>
-
 <div class="stage">
 
-<div class="stageTitle">
-TOPIA実機風プレビュー
-</div>
+  <div class="stageTitle">
+    TOPIA実機風プレビュー
+  </div>
 
-<div id="previewViewport">
-<div id="preview"></div>
-</div>
-
-</div>
-
-
-<!-- 個別補正 -->
-
-<div class="panel">
-
-<div class="panelTitle">
-🎯 特殊文字 個別調整
-</div>
-
-<div class="panelSub">
-調整したい文字を選択して、位置と大きさを変更します。
-通常の「ゆ」「ず」には影響しません。
-</div>
-
-<div class="effectSelector">
-
-<button
-class="effectButton active"
-data-effect="fx1"
->᭄</button>
-
-<button
-class="effectButton"
-data-effect="fx2"
->ꦿૢ</button>
-
-<button
-class="effectButton"
-data-effect="fx3"
->₈</button>
-
-<button
-class="effectButton"
-data-effect="fx4"
->⁸</button>
+  <div class="viewport">
+    <div id="preview"></div>
+  </div>
 
 </div>
-
-<div class="selectedInfo" id="selectedInfo">
-選択中：᭄
-</div>
-
-
-<!-- X -->
-
-<div class="control">
-
-<div class="controlTop">
-<span>左右位置 X</span>
-<span class="controlValue" id="xValue">0px</span>
-</div>
-
-<input
-type="range"
-id="xControl"
-min="-100"
-max="100"
-step="1"
->
-
-</div>
-
-
-<!-- Y -->
-
-<div class="control">
-
-<div class="controlTop">
-<span>上下位置 Y</span>
-<span class="controlValue" id="yValue">0px</span>
-</div>
-
-<input
-type="range"
-id="yControl"
-min="-100"
-max="100"
-step="1"
->
-
-</div>
-
-
-<!-- SCALE -->
-
-<div class="control">
-
-<div class="controlTop">
-<span>大きさ</span>
-<span class="controlValue" id="sizeValue">100%</span>
-</div>
-
-<input
-type="range"
-id="sizeControl"
-min="0.30"
-max="2.00"
-step="0.01"
->
-
-</div>
-
-
-<!-- WIDTH -->
-
-<div class="control">
-
-<div class="controlTop">
-<span>横方向倍率</span>
-<span class="controlValue" id="widthValue">100%</span>
-</div>
-
-<input
-type="range"
-id="widthControl"
-min="0.40"
-max="1.80"
-step="0.01"
->
-
-</div>
-
-
-<button
-class="reset"
-id="resetSelected"
->
-選択文字の調整をリセット
-</button>
-
-</div>
-
-
-<!-- 全体 -->
-
-<div class="panel">
-
-<div class="panelTitle">
-🔍 プレビュー全体倍率
-</div>
-
-<div class="panelSub">
-これは見やすさ調整用です。弾幕コード自体には影響しません。
-</div>
-
-<div class="globalRow">
-
-<button id="zoomOut">−</button>
-
-<div
-class="globalValue"
-id="zoomValue"
->
-100%
-</div>
-
-<button id="zoomIn">＋</button>
-
-</div>
-
-</div>
-
 
 <div class="buttons">
 
-<button class="copy" id="copy">
-コードをコピー
-</button>
+  <button class="copy" id="copy">
+    コードをコピー
+  </button>
 
-<button class="clear" id="clear">
-クリア
-</button>
-
-</div>
-
-
-<div class="samples">
-
-<div class="samplesTitle">
-実機テスト
-</div>
-
-<button
-class="sample"
-id="sampleYuzuki"
->
-🩵 ゆずき特殊文字
-</button>
-
-<button
-class="sample"
-id="sampleThree"
->
-🩵 ゆずき3段弾幕
-</button>
+  <button class="clear" id="clear">
+    クリア
+  </button>
 
 </div>
 
+<details>
+
+<summary>
+⚙️ 詳細補正
+</summary>
+
+<div class="settings">
+
+  <div class="setting">
+
+    <div class="settingHeader">
+      <span>全体倍率</span>
+      <span id="scaleValue">100%</span>
+    </div>
+
+    <input
+      id="scale"
+      type="range"
+      min="70"
+      max="140"
+      value="100"
+      step="1"
+    >
+
+  </div>
+
+  <div class="setting">
+
+    <div class="settingHeader">
+      <span>左右位置</span>
+      <span id="xValue">0px</span>
+    </div>
+
+    <input
+      id="x"
+      type="range"
+      min="-100"
+      max="100"
+      value="0"
+      step="1"
+    >
+
+  </div>
+
+  <div class="setting">
+
+    <div class="settingHeader">
+      <span>上下位置</span>
+      <span id="yValue">0px</span>
+    </div>
+
+    <input
+      id="y"
+      type="range"
+      min="-100"
+      max="100"
+      value="0"
+      step="1"
+    >
+
+  </div>
+
+  <button class="reset" id="reset">
+    補正値をリセット
+  </button>
+
+</div>
+
+</details>
+
+<div class="test">
+
+<h2>実機確認用コード</h2>
+
+<div class="sample">
+ゆずき特殊文字テスト
+</div>
 
 <div class="note">
-TOPIAとSafariではフォント・Unicode結合文字の描画方式が異なります。
-このv7では、実機で差が確認できた特殊文字だけを個別補正できます。
-調整値はこの端末のSafariに保存されます。
-文字数表示は「全角50文字以内」を基準にした推定値です。
+v8では「᭄」「ꦿૢ」「₈」「⁸」「⃟」「꙰」を検出し、
+Safari標準描画との差を自動補正します。
+詳細補正は通常は触らなくてOKです。
+</div>
+
 </div>
 
 </main>
 
-
 <script>
-
-/* =========================
-   DOM
-========================= */
 
 const input =
 document.getElementById("code");
@@ -655,985 +493,5 @@ document.getElementById("code");
 const preview =
 document.getElementById("preview");
 
-const correction =
-document.getElementById("correction");
-
 const counter =
-document.getElementById("counter");
-
-const warning =
-document.getElementById("warning");
-
-
-/* =========================
-   EFFECT SETTINGS
-========================= */
-
-const defaultEffects={
-
-  fx1:{
-    x:0,
-    y:0,
-    scale:1,
-    width:1
-  },
-
-  fx2:{
-    x:0,
-    y:0,
-    scale:1,
-    width:1
-  },
-
-  fx3:{
-    x:0,
-    y:0,
-    scale:1,
-    width:1
-  },
-
-  fx4:{
-    x:0,
-    y:0,
-    scale:1,
-    width:1
-  }
-
-};
-
-
-let effects=
-JSON.parse(
-  localStorage.getItem(
-    "topiaV7Effects"
-  )
-  ||
-  "null"
-);
-
-
-if(!effects){
-
-  effects=
-  JSON.parse(
-    JSON.stringify(
-      defaultEffects
-    )
-  );
-
-}
-
-
-let selected="fx1";
-
-
-/* =========================
-   ZOOM
-========================= */
-
-let zoom=
-Number(
-  localStorage.getItem(
-    "topiaV7Zoom"
-  )
-);
-
-if(!zoom){
-  zoom=1;
-}
-
-
-/* =========================
-   ESCAPE
-========================= */
-
-function escapeHTML(text){
-
-  return text
-  .replace(/&/g,"&amp;")
-  .replace(/</g,"&lt;")
-  .replace(/>/g,"&gt;");
-
-}
-
-
-/* =========================
-   COLOR
-========================= */
-
-function safeColor(color){
-
-  color=color.trim();
-
-  if(
-    /^#[0-9a-f]{3}$/i.test(color)
-    ||
-    /^#[0-9a-f]{6}$/i.test(color)
-  ){
-    return color;
-  }
-
-  return "#fff";
-
-}
-
-
-/* =========================
-   SIZE
-========================= */
-
-function sizeToPx(size){
-
-  size=Number(size);
-
-  if(!Number.isFinite(size)){
-    size=40;
-  }
-
-  let px=size*0.82;
-
-  if(px<8)px=8;
-  if(px>150)px=150;
-
-  return px;
-
-}
-
-
-/* =========================
-   SPECIAL UNICODE
-========================= */
-
-function specialText(text){
-
-  let safe=
-  escapeHTML(text);
-
-  /*
-   長いパターンから先に処理
-  */
-
-  safe=safe.replace(
-    /ꦿૢ₈⁸/g,
-    '<span class="fx fx-2" data-fx="fx2">ꦿૢ</span>'+
-    '<span class="fx fx-8sub" data-fx="fx3">₈</span>'+
-    '<span class="fx fx-8sup" data-fx="fx4">⁸</span>'
-  );
-
-
-  safe=safe.replace(
-    /ꦿૢ/g,
-    '<span class="fx fx-2" data-fx="fx2">ꦿૢ</span>'
-  );
-
-
-  safe=safe.replace(
-    /᭄/g,
-    '<span class="fx fx-1" data-fx="fx1">᭄</span>'
-  );
-
-
-  return safe;
-
-}
-
-
-/* =========================
-   TOKENIZER
-========================= */
-
-function tokenize(text){
-
-  const regex=
-  /(\\ua|<\/?b>|<\/?i>|<size=[^>]+>|<\/size>|<color=[^>]+>|<\/color>)/gi;
-
-  const tokens=[];
-
-  let last=0;
-  let match;
-
-  while(
-    (match=regex.exec(text))!==null
-  ){
-
-    if(match.index>last){
-
-      tokens.push({
-        type:"text",
-        value:text.slice(
-          last,
-          match.index
-        )
-      });
-
-    }
-
-    tokens.push({
-      type:"tag",
-      value:match[0]
-    });
-
-    last=regex.lastIndex;
-
-  }
-
-  if(last<text.length){
-
-    tokens.push({
-      type:"text",
-      value:text.slice(last)
-    });
-
-  }
-
-  return tokens;
-
-}
-
-
-/* =========================
-   PARSER
-========================= */
-
-function parse(text){
-
-  const tokens=
-  tokenize(text);
-
-  let html="";
-
-
-  for(const token of tokens){
-
-    if(token.type==="text"){
-
-      html+=specialText(
-        token.value
-      );
-
-      continue;
-
-    }
-
-
-    const tag=
-    token.value;
-
-    const lower=
-    tag.toLowerCase();
-
-
-    if(lower==="\\ua"){
-
-      html+="<br>";
-      continue;
-
-    }
-
-
-    if(lower==="<b>"){
-
-      html+="<b>";
-      continue;
-
-    }
-
-
-    if(lower==="</b>"){
-
-      html+="</b>";
-      continue;
-
-    }
-
-
-    if(lower==="<i>"){
-
-      html+="<i>";
-      continue;
-
-    }
-
-
-    if(lower==="</i>"){
-
-      html+="</i>";
-      continue;
-
-    }
-
-
-    if(
-      lower.startsWith(
-        "<size="
-      )
-    ){
-
-      const match=
-      tag.match(
-        /<size=([^>]+)>/i
-      );
-
-      const size=
-      match
-      ? match[1]
-      : 40;
-
-      html+=
-      '<span style="'+
-      'font-size:'+
-      sizeToPx(size)+
-      'px;'+
-      'line-height:1;'+
-      '">';
-
-      continue;
-
-    }
-
-
-    if(lower==="</size>"){
-
-      html+="</span>";
-      continue;
-
-    }
-
-
-    if(
-      lower.startsWith(
-        "<color="
-      )
-    ){
-
-      const match=
-      tag.match(
-        /<color=([^>]+)>/i
-      );
-
-      const color=
-      match
-      ? safeColor(match[1])
-      : "#fff";
-
-      html+=
-      '<span style="color:'+
-      color+
-      ';">';
-
-      continue;
-
-    }
-
-
-    if(lower==="</color>"){
-
-      html+="</span>";
-      continue;
-
-    }
-
-  }
-
-
-  return html;
-
-}
-
-
-/* =========================
-   EFFECT RENDER
-========================= */
-
-function applyEffects(){
-
-  document
-  .querySelectorAll(
-    "[data-fx]"
-  )
-  .forEach(function(el){
-
-    const id=
-    el.dataset.fx;
-
-    const s=
-    effects[id];
-
-    if(
-      !correction.checked
-      ||
-      !s
-    ){
-
-      el.style.transform="";
-      return;
-
-    }
-
-
-    el.style.transform=
-    "translate("+
-    s.x+
-    "px,"+
-    s.y+
-    "px) "+
-    "scale("+
-    s.scale+
-    ") "+
-    "scaleX("+
-    s.width+
-    ")";
-
-  });
-
-}
-
-
-/* =========================
-   COUNTER
-========================= */
-
-function estimatedLength(text){
-
-  let total=0;
-
-  for(
-    const char
-    of Array.from(text)
-  ){
-
-    if(
-      char.codePointAt(0)<=0x7f
-    ){
-      total+=0.5;
-    }
-    else{
-      total+=1;
-    }
-
-  }
-
-  return total;
-
-}
-
-
-function updateCounter(){
-
-  const value=
-  estimatedLength(
-    input.value
-  );
-
-  const shown=
-  Number.isInteger(value)
-  ? value
-  : value.toFixed(1);
-
-
-  counter.textContent=
-  "推定："+shown+" / 50";
-
-
-  if(value>50){
-
-    warning.textContent=
-    "⚠ 上限超過の可能性";
-
-    warning.className=
-    "danger";
-
-  }
-  else if(value>=45){
-
-    warning.textContent=
-    "⚠ 上限付近";
-
-    warning.className=
-    "warning";
-
-  }
-  else{
-
-    warning.textContent="";
-
-  }
-
-}
-
-
-/* =========================
-   RENDER
-========================= */
-
-function render(){
-
-  preview.innerHTML=
-  parse(
-    input.value
-  );
-
-
-  preview.style.transform=
-  "translateY(-50%) scale("+
-  zoom+
-  ")";
-
-
-  applyEffects();
-
-  updateCounter();
-
-}
-
-
-/* =========================
-   CONTROL DOM
-========================= */
-
-const xControl=
-document.getElementById(
-  "xControl"
-);
-
-const yControl=
-document.getElementById(
-  "yControl"
-);
-
-const sizeControl=
-document.getElementById(
-  "sizeControl"
-);
-
-const widthControl=
-document.getElementById(
-  "widthControl"
-);
-
-
-const xValue=
-document.getElementById(
-  "xValue"
-);
-
-const yValue=
-document.getElementById(
-  "yValue"
-);
-
-const sizeValue=
-document.getElementById(
-  "sizeValue"
-);
-
-const widthValue=
-document.getElementById(
-  "widthValue"
-);
-
-const selectedInfo=
-document.getElementById(
-  "selectedInfo"
-);
-
-
-/* =========================
-   SELECT
-========================= */
-
-const names={
-
-  fx1:"᭄",
-  fx2:"ꦿૢ",
-  fx3:"₈",
-  fx4:"⁸"
-
-};
-
-
-function updateControls(){
-
-  const s=
-  effects[selected];
-
-
-  xControl.value=s.x;
-  yControl.value=s.y;
-  sizeControl.value=s.scale;
-  widthControl.value=s.width;
-
-
-  xValue.textContent=
-  s.x+"px";
-
-  yValue.textContent=
-  s.y+"px";
-
-  sizeValue.textContent=
-  Math.round(
-    s.scale*100
-  )+"%";
-
-  widthValue.textContent=
-  Math.round(
-    s.width*100
-  )+"%";
-
-
-  selectedInfo.textContent=
-  "選択中："+
-  names[selected];
-
-
-  document
-  .querySelectorAll(
-    ".effectButton"
-  )
-  .forEach(function(button){
-
-    button.classList.toggle(
-      "active",
-      button.dataset.effect===
-      selected
-    );
-
-  });
-
-}
-
-
-document
-.querySelectorAll(
-  ".effectButton"
-)
-.forEach(function(button){
-
-  button.addEventListener(
-    "click",
-    function(){
-
-      selected=
-      this.dataset.effect;
-
-      updateControls();
-
-    }
-  );
-
-});
-
-
-/* =========================
-   SAVE
-========================= */
-
-function saveEffects(){
-
-  localStorage.setItem(
-    "topiaV7Effects",
-    JSON.stringify(
-      effects
-    )
-  );
-
-}
-
-
-/* =========================
-   SLIDERS
-========================= */
-
-xControl.addEventListener(
-  "input",
-  function(){
-
-    effects[selected].x=
-    Number(this.value);
-
-    saveEffects();
-    updateControls();
-    render();
-
-  }
-);
-
-
-yControl.addEventListener(
-  "input",
-  function(){
-
-    effects[selected].y=
-    Number(this.value);
-
-    saveEffects();
-    updateControls();
-    render();
-
-  }
-);
-
-
-sizeControl.addEventListener(
-  "input",
-  function(){
-
-    effects[selected].scale=
-    Number(this.value);
-
-    saveEffects();
-    updateControls();
-    render();
-
-  }
-);
-
-
-widthControl.addEventListener(
-  "input",
-  function(){
-
-    effects[selected].width=
-    Number(this.value);
-
-    saveEffects();
-    updateControls();
-    render();
-
-  }
-);
-
-
-/* =========================
-   RESET SELECTED
-========================= */
-
-document
-.getElementById(
-  "resetSelected"
-)
-.addEventListener(
-  "click",
-  function(){
-
-    effects[selected]=
-    JSON.parse(
-      JSON.stringify(
-        defaultEffects[selected]
-      )
-    );
-
-    saveEffects();
-    updateControls();
-    render();
-
-  }
-);
-
-
-/* =========================
-   ZOOM
-========================= */
-
-function updateZoom(){
-
-  if(zoom<0.4)zoom=0.4;
-  if(zoom>1.8)zoom=1.8;
-
-  localStorage.setItem(
-    "topiaV7Zoom",
-    zoom
-  );
-
-  document
-  .getElementById(
-    "zoomValue"
-  )
-  .textContent=
-  Math.round(
-    zoom*100
-  )+"%";
-
-  render();
-
-}
-
-
-document
-.getElementById(
-  "zoomOut"
-)
-.addEventListener(
-  "click",
-  function(){
-
-    zoom-=0.1;
-
-    zoom=
-    Math.round(
-      zoom*10
-    )/10;
-
-    updateZoom();
-
-  }
-);
-
-
-document
-.getElementById(
-  "zoomIn"
-)
-.addEventListener(
-  "click",
-  function(){
-
-    zoom+=0.1;
-
-    zoom=
-    Math.round(
-      zoom*10
-    )/10;
-
-    updateZoom();
-
-  }
-);
-
-
-/* =========================
-   INPUT
-========================= */
-
-input.addEventListener(
-  "input",
-  render
-);
-
-correction.addEventListener(
-  "change",
-  render
-);
-
-
-/* =========================
-   COPY
-========================= */
-
-document
-.getElementById(
-  "copy"
-)
-.addEventListener(
-  "click",
-  async function(){
-
-    try{
-
-      await navigator.clipboard
-      .writeText(
-        input.value
-      );
-
-      const button=this;
-
-      button.textContent=
-      "コピーしました ✓";
-
-      setTimeout(
-        function(){
-
-          button.textContent=
-          "コードをコピー";
-
-        },
-        1200
-      );
-
-    }
-    catch(e){
-
-      input.select();
-
-      document.execCommand(
-        "copy"
-      );
-
-    }
-
-  }
-);
-
-
-/* =========================
-   CLEAR
-========================= */
-
-document
-.getElementById(
-  "clear"
-)
-.addEventListener(
-  "click",
-  function(){
-
-    input.value="";
-
-    render();
-
-    input.focus();
-
-  }
-);
-
-
-/* =========================
-   SAMPLE
-========================= */
-
-document
-.getElementById(
-  "sampleYuzuki"
-)
-.addEventListener(
-  "click",
-  function(){
-
-    input.value=
-    '<i><size=80>ゆ<size=40>ず</size><color=#0FC>᭄</color><color=#9ff>ꦿૢ₈⁸</color></size></i>';
-
-    render();
-
-  }
-);
-
-
-document
-.getElementById(
-  "sampleThree"
-)
-.addEventListener(
-  "click",
-  function(){
-
-    input.value=
-    '\\ua<i><size=60><color=#9ff>　꙰♡✺꙰\\ua👏ゆ⃟ず⃟き⃟👏\\ua　꙰♡✺꙰</color></size></i>';
-
-    render();
-
-  }
-);
-
-
-/* =========================
-   START
-========================= */
-
-updateControls();
-updateZoom();
-render();
-
-</script>
-
-</body>
-</html>
+document.getElement
