@@ -2,21 +2,26 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>トピア弾幕プレビュー v8</title>
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1,viewport-fit=cover"
+>
+
+<title>トピア弾幕プレビュー v9</title>
 
 <style>
+
 *{
   box-sizing:border-box;
 }
 
 :root{
   --bg:#101116;
-  --panel:#171922;
-  --panel2:#1d202b;
-  --border:#3d414e;
-  --text:#fff;
-  --sub:#9ea1aa;
+  --panel:#1b1d26;
+  --border:#454957;
+  --text:#ffffff;
+  --sub:#9da0a9;
   --pink:#ff83b3;
 }
 
@@ -24,6 +29,7 @@ body{
   margin:0;
   background:var(--bg);
   color:var(--text);
+
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -34,35 +40,48 @@ body{
 }
 
 main{
+  width:100%;
   max-width:800px;
-  margin:auto;
-  padding:22px 16px 60px;
+  margin:0 auto;
+  padding:24px 16px 60px;
 }
 
 h1{
-  margin:5px 0 6px;
+  margin:4px 0 5px;
   font-size:25px;
+  line-height:1.35;
 }
 
 .sub{
+  margin-bottom:18px;
   color:var(--sub);
   font-size:13px;
   line-height:1.6;
-  margin-bottom:18px;
 }
+
+/* =========================
+   入力
+========================= */
 
 textarea{
   width:100%;
   height:170px;
+
   resize:vertical;
-  background:#1b1d26;
-  color:#fff;
+
+  padding:15px;
+
   border:1px solid #505462;
   border-radius:16px;
-  padding:15px;
+
+  outline:none;
+
+  background:var(--panel);
+  color:#fff;
+
+  font-family:inherit;
   font-size:16px;
   line-height:1.55;
-  outline:none;
 }
 
 textarea:focus{
@@ -73,8 +92,11 @@ textarea:focus{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  gap:10px;
-  margin:10px 3px 16px;
+
+  min-height:28px;
+
+  margin:9px 3px 13px;
+
   color:#aaa;
   font-size:13px;
 }
@@ -87,27 +109,32 @@ textarea:focus{
   color:#ff7d8b;
 }
 
+
 /* =========================
-   TOPIA風ステージ
+   プレビュー
 ========================= */
 
 .stage{
   position:relative;
+
+  width:100%;
   height:390px;
+
   overflow:hidden;
+
+  border:1px solid var(--border);
   border-radius:18px;
-  border:1px solid #454957;
 
   background:
     radial-gradient(
       circle at 15% 15%,
-      rgba(83,91,125,.40),
+      rgba(80,88,120,.38),
       transparent 35%
     ),
     radial-gradient(
       circle at 85% 85%,
-      rgba(80,55,96,.35),
-      transparent 38%
+      rgba(83,56,98,.32),
+      transparent 40%
     ),
     linear-gradient(
       145deg,
@@ -116,36 +143,28 @@ textarea:focus{
     );
 }
 
-.stageTitle{
+.stage-title{
   position:absolute;
+
   top:13px;
   left:14px;
+
+  z-index:20;
+
   color:#a6a8af;
   font-size:12px;
-  z-index:5;
 }
 
-.viewport{
-  position:absolute;
-  left:0;
-  top:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-}
-
-/*
- TOPIAのコメント表示は中央揃えではなく
- 左側を基準として横方向へ伸びるように再現。
-*/
 #preview{
   position:absolute;
-  left:28px;
-  top:105px;
 
-  display:inline-block;
+  left:32px;
+  top:125px;
+
+  display:block;
 
   white-space:pre;
+
   text-align:left;
 
   line-height:1;
@@ -164,83 +183,131 @@ textarea:focus{
     sans-serif;
 }
 
-/* 通常文字 */
-.normal-char{
-  position:relative;
-  display:inline-block;
-  vertical-align:baseline;
+
+/* =========================
+   TOPIA文字
+========================= */
+
+.topia-text{
+  display:inline;
 }
+
 
 /*
- 特殊Unicode。
-
- Safariの通常のUnicode合成に完全依存すると
- TOPIAとの差が大きくなるため、
- 特殊文字だけ独立した描画要素として扱う。
+  通常文字はSafariに
+  そのまま描画させる
 */
-.special-char{
+
+.grapheme{
   position:relative;
+}
+
+
+/*
+  ᭄
+
+  TOPIA実機では大きなカーブとして
+  前後の文字へ重なって表示される。
+*/
+
+.fx-a{
+  position:relative;
+
   display:inline-block;
-  vertical-align:baseline;
-  transform-origin:center center;
-}
 
-/* ᭄ */
-.fx-ornament-a{
-  margin-left:-7px;
-  margin-right:-10px;
+  width:.62em;
+
+  margin-left:-.13em;
+  margin-right:-.15em;
 
   transform:
-    translate(-2px,8px)
+    translateY(.10em)
+    scaleX(.94)
+    scaleY(1.08);
+
+  transform-origin:center;
+}
+
+
+/*
+  ꦿૢ
+
+  この2文字は分割せず
+  ひとまとまりとして扱う。
+*/
+
+.fx-b{
+  position:relative;
+
+  display:inline-block;
+
+  width:.68em;
+
+  margin-left:-.18em;
+  margin-right:-.12em;
+
+  transform:
+    translateY(.08em)
     scaleX(.90)
-    scaleY(1.05);
+    scaleY(.98);
+
+  transform-origin:center;
 }
 
-/* ꦿૢ */
-.fx-ornament-b{
-  margin-left:-14px;
-  margin-right:-10px;
-
-  transform:
-    translate(-4px,9px)
-    scaleX(.86)
-    scaleY(.92);
-}
 
 /* 下付き8 */
+
 .fx-sub8{
-  margin-left:-8px;
-  margin-right:-5px;
+  position:relative;
+
+  display:inline-block;
+
+  margin-left:-.12em;
+  margin-right:-.05em;
 
   transform:
-    translate(-2px,13px)
-    scale(.82);
+    translateY(.22em)
+    scale(.84);
+
+  transform-origin:center;
 }
+
 
 /* 上付き8 */
+
 .fx-super8{
-  margin-left:-7px;
-  margin-right:-4px;
+  position:relative;
+
+  display:inline-block;
+
+  margin-left:-.10em;
 
   transform:
-    translate(-1px,-17px)
-    scale(.82);
+    translateY(-.30em)
+    scale(.84);
+
+  transform-origin:center;
 }
 
-/* ⃟ */
-.fx-diamond{
-  margin-left:-7px;
-  margin-right:-7px;
 
-  transform:
-    scale(1.18);
+/*
+  ⃟ は結合文字なので
+  原則Safariの結合描画を残す
+*/
+
+.fx-combine{
+  position:relative;
 }
 
-/* ꙰ */
+
+/*
+  ꙰ も同様
+*/
+
 .fx-dot{
-  margin-left:-4px;
-  margin-right:-4px;
+  position:relative;
 }
+
 
 /* =========================
    ボタン
@@ -253,245 +320,871 @@ textarea:focus{
 }
 
 button{
+  flex:1;
+
   border:0;
   border-radius:13px;
-  padding:13px;
+
+  padding:14px 10px;
+
   font-size:15px;
   font-weight:700;
 }
 
 .copy{
-  flex:1;
   background:var(--pink);
   color:#111;
 }
 
 .clear{
-  flex:1;
   background:#30333f;
   color:#fff;
 }
 
+
 /* =========================
-   詳細設定
+   状態表示
 ========================= */
 
-details{
+.status{
   margin-top:18px;
-  background:var(--panel);
+
+  padding:14px 15px;
+
   border:1px solid #373b46;
-  border-radius:16px;
-  overflow:hidden;
+  border-radius:15px;
+
+  background:#171922;
 }
 
-summary{
-  padding:15px;
-  cursor:pointer;
+.status-title{
+  margin-bottom:8px;
   font-weight:700;
 }
 
-.settings{
-  padding:0 15px 18px;
-}
-
-.setting{
-  margin:16px 0;
-}
-
-.settingHeader{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:8px;
-  color:#bbb;
-  font-size:13px;
-}
-
-input[type="range"]{
-  width:100%;
-  accent-color:var(--pink);
-}
-
-.reset{
-  width:100%;
-  margin-top:8px;
-  background:#50323e;
-  color:#ff9fc2;
-}
-
-/* =========================
-   実機確認用
-========================= */
-
-.test{
-  margin-top:18px;
-  background:var(--panel);
-  border:1px solid #373b46;
-  border-radius:16px;
-  padding:15px;
-}
-
-.test h2{
-  margin:0 0 12px;
-  font-size:16px;
-}
-
-.sample{
-  background:#252834;
-  border-radius:12px;
-  padding:12px;
-  text-align:center;
-  margin-top:8px;
-  color:#ddd;
-}
-
-.note{
-  color:#888;
+.status-text{
+  color:#999;
   font-size:12px;
-  line-height:1.6;
-  margin-top:14px;
+  line-height:1.7;
 }
+
+.ok{
+  color:#8ee6b1;
+}
+
+.error{
+  color:#ff8c98;
+}
+
 </style>
 </head>
+
 
 <body>
 
 <main>
 
-<h1>✨ トピア弾幕プレビュー v8</h1>
+<h1>
+✨ トピア弾幕プレビュー v9
+</h1>
 
 <div class="sub">
-弾幕コードを貼るだけでTOPIA実機風に自動補正
+コードを貼るだけでTOPIA実機風にプレビュー
 </div>
+
 
 <textarea
   id="code"
   spellcheck="false"
 ><i><size=80>ゆ<size=40>ず</size><color=#0FC>᭄</color><color=#9ff>ꦿૢ₈⁸</color></size></i></textarea>
 
+
 <div class="info">
-  <span id="counter">推定：0 / 50</span>
+
+  <span id="counter">
+    推定：0 / 50
+  </span>
+
   <span id="warning"></span>
+
 </div>
+
 
 <div class="stage">
 
-  <div class="stageTitle">
+  <div class="stage-title">
     TOPIA実機風プレビュー
   </div>
 
-  <div class="viewport">
-    <div id="preview"></div>
-  </div>
+  <div id="preview"></div>
 
 </div>
 
+
 <div class="buttons">
 
-  <button class="copy" id="copy">
+  <button
+    class="copy"
+    id="copy"
+  >
     コードをコピー
   </button>
 
-  <button class="clear" id="clear">
+  <button
+    class="clear"
+    id="clear"
+  >
     クリア
   </button>
 
 </div>
 
-<details>
 
-<summary>
-⚙️ 詳細補正
-</summary>
+<div class="status">
 
-<div class="settings">
-
-  <div class="setting">
-
-    <div class="settingHeader">
-      <span>全体倍率</span>
-      <span id="scaleValue">100%</span>
-    </div>
-
-    <input
-      id="scale"
-      type="range"
-      min="70"
-      max="140"
-      value="100"
-      step="1"
-    >
-
+  <div class="status-title">
+    🔎 レンダラー状態
   </div>
 
-  <div class="setting">
-
-    <div class="settingHeader">
-      <span>左右位置</span>
-      <span id="xValue">0px</span>
-    </div>
-
-    <input
-      id="x"
-      type="range"
-      min="-100"
-      max="100"
-      value="0"
-      step="1"
-    >
-
+  <div
+    class="status-text"
+    id="status"
+  >
+    起動中…
   </div>
-
-  <div class="setting">
-
-    <div class="settingHeader">
-      <span>上下位置</span>
-      <span id="yValue">0px</span>
-    </div>
-
-    <input
-      id="y"
-      type="range"
-      min="-100"
-      max="100"
-      value="0"
-      step="1"
-    >
-
-  </div>
-
-  <button class="reset" id="reset">
-    補正値をリセット
-  </button>
-
-</div>
-
-</details>
-
-<div class="test">
-
-<h2>実機確認用コード</h2>
-
-<div class="sample">
-ゆずき特殊文字テスト
-</div>
-
-<div class="note">
-v8では「᭄」「ꦿૢ」「₈」「⁸」「⃟」「꙰」を検出し、
-Safari標準描画との差を自動補正します。
-詳細補正は通常は触らなくてOKです。
-</div>
 
 </div>
 
 </main>
 
+
 <script>
 
+/* =========================
+   DOM
+========================= */
+
 const input =
-document.getElementById("code");
+  document.getElementById("code");
 
 const preview =
-document.getElementById("preview");
+  document.getElementById("preview");
 
 const counter =
-document.getElement
+  document.getElementById("counter");
+
+const warning =
+  document.getElementById("warning");
+
+const status =
+  document.getElementById("status");
+
+
+/* =========================
+   HTML escape
+========================= */
+
+function escapeHTML(text){
+
+  return String(text)
+
+    .replace(/&/g,"&amp;")
+
+    .replace(/</g,"&lt;")
+
+    .replace(/>/g,"&gt;")
+
+    .replace(/"/g,"&quot;");
+
+}
+
+
+/* =========================
+   文字分割
+
+   Intl.Segmenter があれば
+   grapheme単位。
+
+   なければArray.from。
+========================= */
+
+function splitGraphemes(text){
+
+  try{
+
+    if(
+      typeof Intl !== "undefined" &&
+      typeof Intl.Segmenter !== "undefined"
+    ){
+
+      const segmenter =
+        new Intl.Segmenter(
+          "ja",
+          {
+            granularity:"grapheme"
+          }
+        );
+
+      return Array.from(
+        segmenter.segment(text),
+        function(item){
+          return item.segment;
+        }
+      );
+
+    }
+
+  }
+
+  catch(e){
+
+    console.log(
+      "Segmenter fallback",
+      e
+    );
+
+  }
+
+  return Array.from(text);
+
+}
+
+
+/* =========================
+   TOPIA文字数の目安
+
+   正確な内部仕様ではなく
+   実機エラーの
+   「全角50文字以内」を
+   見るための目安。
+========================= */
+
+function topiaLength(text){
+
+  let total=0;
+
+  const chars=
+    Array.from(text);
+
+  for(const ch of chars){
+
+    const cp=
+      ch.codePointAt(0);
+
+    if(cp<=0x7F){
+
+      total+=0.5;
+
+    }
+
+    else{
+
+      total+=1;
+
+    }
+
+  }
+
+  return Math.round(
+    total*10
+  )/10;
+
+}
+
+
+/* =========================
+   色チェック
+========================= */
+
+function safeColor(color){
+
+  if(
+    /^#[0-9a-f]{3}$/i.test(color) ||
+    /^#[0-9a-f]{6}$/i.test(color) ||
+    /^#[0-9a-f]{8}$/i.test(color)
+  ){
+
+    return color;
+
+  }
+
+  return "#ffffff";
+
+}
+
+
+/* =========================
+   特殊文字描画
+========================= */
+
+function renderGrapheme(g){
+
+  /*
+    ꦿૢ は必ずセットで優先
+  */
+
+  if(g==="ꦿૢ"){
+
+    return (
+      '<span class="fx-b">' +
+      escapeHTML(g) +
+      '</span>'
+    );
+
+  }
+
+
+  if(g==="᭄"){
+
+    return (
+      '<span class="fx-a">' +
+      escapeHTML(g) +
+      '</span>'
+    );
+
+  }
+
+
+  if(g==="₈"){
+
+    return (
+      '<span class="fx-sub8">' +
+      escapeHTML(g) +
+      '</span>'
+    );
+
+  }
+
+
+  if(g==="⁸"){
+
+    return (
+      '<span class="fx-super8">' +
+      escapeHTML(g) +
+      '</span>'
+    );
+
+  }
+
+
+  /*
+    結合文字を含む場合は
+    分解せずそのまま表示
+  */
+
+  if(g.includes("⃟")){
+
+    return (
+      '<span class="fx-combine">' +
+      escapeHTML(g) +
+      '</span>'
+    );
+
+  }
+
+
+  if(g.includes("꙰")){
+
+    return (
+      '<span class="fx-dot">' +
+      escapeHTML(g) +
+      '</span>'
+    );
+
+  }
+
+
+  return (
+    '<span class="grapheme">' +
+    escapeHTML(g) +
+    '</span>'
+  );
+
+}
+
+
+/* =========================
+   テキスト描画
+========================= */
+
+function renderPlainText(text){
+
+  /*
+    Safariによって
+    ꦿૢ が別graphemeになる場合が
+    あるので先に保護。
+  */
+
+  const TOKEN =
+    "\uE000";
+
+  text =
+    text.replace(
+      /ꦿૢ/g,
+      TOKEN
+    );
+
+  const graphemes =
+    splitGraphemes(text);
+
+  let html="";
+
+  for(const g of graphemes){
+
+    if(g===TOKEN){
+
+      html +=
+        renderGrapheme(
+          "ꦿૢ"
+        );
+
+    }
+
+    else{
+
+      html +=
+        renderGrapheme(g);
+
+    }
+
+  }
+
+  return html;
+
+}
+
+
+/* =========================
+   TOPIA parser
+========================= */
+
+function parseTopia(raw){
+
+  let html="";
+
+  let lastIndex=0;
+
+  /*
+    対応：
+
+    \ua
+    b
+    i
+    size
+    color
+  */
+
+  const regex =
+    /(\\ua|<\/?b>|<\/?i>|<size=([^>]+)>|<\/size>|<color=([^>]+)>|<\/color>)/gi;
+
+  let match;
+
+
+  while(
+    (match=regex.exec(raw)) !== null
+  ){
+
+    /*
+      タグまでの通常文字
+    */
+
+    const plain =
+      raw.slice(
+        lastIndex,
+        match.index
+      );
+
+    html +=
+      renderPlainText(plain);
+
+
+    const originalTag =
+      match[0];
+
+    const lower =
+      originalTag.toLowerCase();
+
+
+    /* =====================
+       \ua
+    ===================== */
+
+    if(lower==="\\ua"){
+
+      html += "<br>";
+
+    }
+
+
+    /* =====================
+       bold
+    ===================== */
+
+    else if(lower==="<b>"){
+
+      html +=
+        '<span style="font-weight:700">';
+
+    }
+
+    else if(lower==="</b>"){
+
+      html += "</span>";
+
+    }
+
+
+    /* =====================
+       italic
+    ===================== */
+
+    else if(lower==="<i>"){
+
+      html +=
+        '<span style="font-style:italic">';
+
+    }
+
+    else if(lower==="</i>"){
+
+      html += "</span>";
+
+    }
+
+
+    /* =====================
+       size
+    ===================== */
+
+    else if(
+      lower.startsWith("<size=")
+    ){
+
+      let size =
+        parseFloat(match[2]);
+
+      if(
+        !Number.isFinite(size)
+      ){
+
+        size=40;
+
+      }
+
+      /*
+        v9基準。
+
+        size値をWebのpxへ
+        ほぼ1:1で変換。
+      */
+
+      const px =
+        Math.max(
+          8,
+          Math.min(
+            size,
+            150
+          )
+        );
+
+      html +=
+        '<span ' +
+        'class="topia-text" ' +
+        'style="' +
+        'font-size:' +
+        px +
+        'px;' +
+        'line-height:1;' +
+        '">';
+
+    }
+
+    else if(
+      lower==="</size>"
+    ){
+
+      html += "</span>";
+
+    }
+
+
+    /* =====================
+       color
+    ===================== */
+
+    else if(
+      lower.startsWith("<color=")
+    ){
+
+      const color =
+        safeColor(
+          match[3]
+        );
+
+      html +=
+        '<span style="color:' +
+        color +
+        '">';
+
+    }
+
+    else if(
+      lower==="</color>"
+    ){
+
+      html += "</span>";
+
+    }
+
+
+    lastIndex =
+      regex.lastIndex;
+
+  }
+
+
+  /*
+    最後に残った文字
+  */
+
+  html +=
+    renderPlainText(
+      raw.slice(lastIndex)
+    );
+
+
+  return html;
+
+}
+
+
+/* =========================
+   Render
+========================= */
+
+function render(){
+
+  try{
+
+    const raw =
+      input.value;
+
+
+    /*
+      先にカウンター。
+
+      parserで何か起きても
+      0のままにならない。
+    */
+
+    const length =
+      topiaLength(raw);
+
+    counter.textContent =
+      "推定：" +
+      length +
+      " / 50";
+
+
+    if(length>50){
+
+      warning.textContent =
+        "⚠ 上限超過";
+
+      warning.className =
+        "danger";
+
+    }
+
+    else if(length>=45){
+
+      warning.textContent =
+        "⚠ 上限付近";
+
+      warning.className =
+        "warning";
+
+    }
+
+    else{
+
+      warning.textContent="";
+      warning.className="";
+
+    }
+
+
+    /*
+      空欄
+    */
+
+    if(raw.trim()===""){
+
+      preview.innerHTML="";
+
+      status.innerHTML =
+        '<span class="ok">' +
+        '✓ レンダラー正常' +
+        '</span>';
+
+      return;
+
+    }
+
+
+    /*
+      TOPIAコード解析
+    */
+
+    const result =
+      parseTopia(raw);
+
+
+    preview.innerHTML =
+      result;
+
+
+    status.innerHTML =
+      '<span class="ok">' +
+      '✓ v9レンダラー正常' +
+      '</span>' +
+      '　grapheme解析：ON';
+
+
+  }
+
+  catch(error){
+
+    /*
+      何かあっても
+      プレビュー領域を
+      完全に無反応にしない。
+    */
+
+    console.error(error);
+
+    preview.textContent =
+      input.value;
+
+    status.innerHTML =
+      '<span class="error">' +
+      '⚠ レンダラーエラー：' +
+      escapeHTML(
+        error.message || String(error)
+      ) +
+      '</span>';
+
+  }
+
+}
+
+
+/* =========================
+   入力イベント
+========================= */
+
+input.addEventListener(
+  "input",
+  render
+);
+
+
+/* =========================
+   Clear
+========================= */
+
+document
+  .getElementById("clear")
+  .addEventListener(
+    "click",
+    function(){
+
+      input.value="";
+
+      render();
+
+      input.focus();
+
+    }
+  );
+
+
+/* =========================
+   Copy
+========================= */
+
+document
+  .getElementById("copy")
+  .addEventListener(
+    "click",
+    async function(){
+
+      const button=this;
+
+      try{
+
+        await navigator
+          .clipboard
+          .writeText(
+            input.value
+          );
+
+        button.textContent =
+          "コピーしました ✓";
+
+      }
+
+      catch(error){
+
+        input.focus();
+
+        input.select();
+
+        try{
+
+          document.execCommand(
+            "copy"
+          );
+
+          button.textContent =
+            "コピーしました ✓";
+
+        }
+
+        catch(copyError){
+
+          button.textContent =
+            "コピーできませんでした";
+
+        }
+
+      }
+
+
+      setTimeout(
+        function(){
+
+          button.textContent =
+            "コードをコピー";
+
+        },
+        1200
+      );
+
+    }
+  );
+
+
+/* =========================
+   起動
+
+   DOM読み込み後なので
+   そのままrender可能。
+========================= */
+
+render();
+
+</script>
+
+</body>
+</html>
