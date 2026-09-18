@@ -3,116 +3,268 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>トピア弾幕プレビュー</title>
+<title>トピア弾幕プレビュー v2</title>
 
 <style>
 *{box-sizing:border-box}
 
 body{
-margin:0;
-background:#101116;
-color:#fff;
-font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif;
+  margin:0;
+  background:#101116;
+  color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;
 }
 
 main{
-max-width:800px;
-margin:auto;
-padding:18px;
+  max-width:800px;
+  margin:auto;
+  padding:18px;
 }
 
 h1{
-font-size:24px;
-margin:5px 0;
+  font-size:24px;
+  margin:5px 0;
 }
 
 .sub{
-font-size:13px;
-color:#aaa;
-margin-bottom:16px;
+  font-size:13px;
+  color:#aaa;
+  margin:5px 0 16px;
+  line-height:1.6;
 }
 
 textarea{
-width:100%;
-height:180px;
-background:#1b1d26;
-color:#fff;
-border:1px solid #444;
-border-radius:14px;
-padding:14px;
-font-size:16px;
-line-height:1.5;
+  width:100%;
+  height:180px;
+  background:#1b1d26;
+  color:#fff;
+  border:1px solid #444;
+  border-radius:14px;
+  padding:14px;
+  font-size:16px;
+  line-height:1.5;
+  resize:vertical;
 }
 
 .info{
-display:flex;
-justify-content:space-between;
-font-size:13px;
-color:#aaa;
-margin:8px 2px 15px;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  font-size:13px;
+  color:#aaa;
+  margin:8px 2px 12px;
 }
 
-.warning{
-color:#ffd166;
+.warning{color:#ffd166}
+.danger{color:#ff7272}
+
+.controls{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:12px;
+  font-size:13px;
+  color:#bbb;
+}
+
+.switch{
+  position:relative;
+  width:44px;
+  height:24px;
+  display:inline-block;
+}
+
+.switch input{display:none}
+
+.slider{
+  position:absolute;
+  inset:0;
+  background:#444;
+  border-radius:30px;
+  transition:.2s;
+}
+
+.slider:before{
+  content:"";
+  position:absolute;
+  width:18px;
+  height:18px;
+  left:3px;
+  top:3px;
+  background:white;
+  border-radius:50%;
+  transition:.2s;
+}
+
+.switch input:checked + .slider{
+  background:#ff8eb8;
+}
+
+.switch input:checked + .slider:before{
+  transform:translateX(20px);
 }
 
 .stage{
-position:relative;
-min-height:350px;
-border-radius:18px;
-overflow:hidden;
-border:1px solid #3b3d49;
-background:
-radial-gradient(circle at 20% 20%,#3b4057 0,transparent 30%),
-radial-gradient(circle at 80% 80%,#392d4b 0,transparent 30%),
-linear-gradient(145deg,#242735,#111218);
+  position:relative;
+  min-height:400px;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid #3b3d49;
+  background:
+    radial-gradient(circle at 20% 20%,#3b4057 0,transparent 30%),
+    radial-gradient(circle at 80% 80%,#392d4b 0,transparent 30%),
+    linear-gradient(145deg,#242735,#111218);
 }
 
 .stageTitle{
-position:absolute;
-top:12px;
-left:14px;
-font-size:12px;
-color:#999;
+  position:absolute;
+  top:12px;
+  left:14px;
+  font-size:12px;
+  color:#999;
 }
 
 #preview{
-position:absolute;
-top:65px;
-left:5px;
-right:5px;
-text-align:center;
-white-space:pre-wrap;
-overflow-wrap:anywhere;
-line-height:1.2;
-text-shadow:
-0 2px 3px #000,
-0 0 8px rgba(255,255,255,.15);
+  position:absolute;
+  top:65px;
+  left:10px;
+  right:10px;
+  min-height:280px;
+  white-space:pre;
+  text-align:left;
+  text-shadow:
+    0 2px 3px #000,
+    0 0 7px rgba(255,255,255,.12);
+}
+
+.topia-line{
+  position:relative;
+  display:block;
+  height:95px;
+  white-space:nowrap;
+  transform-origin:left center;
+}
+
+/* ===== TOPIA特殊文字補正 ===== */
+
+.topia-mode .diamond-combine{
+  position:relative;
+  display:inline-block;
+  width:0;
+  overflow:visible;
+  transform:
+    translate(-.55em,-.04em)
+    scale(1.65);
+  transform-origin:center;
+}
+
+.topia-mode .scatter-combine{
+  position:relative;
+  display:inline-block;
+  width:0;
+  overflow:visible;
+  transform:
+    translate(-.35em,-.35em)
+    scale(1.35);
+  transform-origin:center;
+}
+
+.topia-mode .mark-kudari{
+  position:relative;
+  display:inline-block;
+  margin-left:-.40em;
+  margin-right:-.15em;
+  transform:
+    translateY(-.10em)
+    scale(1.25);
+  transform-origin:center;
+}
+
+.topia-mode .mark-ornament{
+  position:relative;
+  display:inline-block;
+  margin-left:-.42em;
+  margin-right:-.18em;
+  transform:
+    translateY(-.12em)
+    scale(1.35);
+  transform-origin:center;
+}
+
+.topia-mode .mark-small-number{
+  position:relative;
+  display:inline-block;
+  margin-left:-.18em;
+  transform:
+    translateY(-.34em)
+    scale(.88);
+  transform-origin:left center;
+}
+
+.topia-mode .mark-star{
+  position:relative;
+  display:inline-block;
+  transform:scale(1.18);
+  transform-origin:center;
+}
+
+.invalid{
+  text-decoration:underline wavy #ff5252;
 }
 
 .buttons{
-display:flex;
-gap:8px;
-margin-top:14px;
+  display:flex;
+  gap:8px;
+  margin-top:14px;
 }
 
 button{
-flex:1;
-padding:12px;
-border:0;
-border-radius:12px;
-font-size:15px;
-font-weight:bold;
+  flex:1;
+  padding:12px;
+  border:0;
+  border-radius:12px;
+  font-size:15px;
+  font-weight:bold;
+  cursor:pointer;
 }
 
 .copy{
-background:#ff8eb8;
-color:#111;
+  background:#ff8eb8;
+  color:#111;
 }
 
 .clear{
-background:#30333f;
-color:#fff;
+  background:#30333f;
+  color:#fff;
+}
+
+.samples{
+  margin-top:20px;
+  padding:14px;
+  border-radius:14px;
+  background:#181a22;
+  border:1px solid #30323c;
+}
+
+.samples-title{
+  font-size:14px;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+
+.sample-button{
+  width:100%;
+  margin-top:7px;
+  background:#292c37;
+  color:#fff;
+  font-weight:normal;
+}
+
+.note{
+  margin-top:14px;
+  font-size:12px;
+  color:#888;
+  line-height:1.6;
 }
 </style>
 </head>
@@ -121,39 +273,57 @@ color:#fff;
 
 <main>
 
-<h1>✨ トピア弾幕プレビュー</h1>
+<h1>✨ トピア弾幕プレビュー v2</h1>
 
 <div class="sub">
-\ua・color・size・b・i・特殊文字を簡易プレビュー
+\ua・color・size・b・i・特殊文字をトピア実機風にプレビュー
 </div>
 
-<textarea id="code" spellcheck="false">\ua<i><size=60><color=#a8f>꙰♡✺꙰</color><color=#f9d>👏ゆ⃟ず⃟き⃟👏</color><color=#0fa>꙰♡✺꙰</color></size></i></textarea>
+<textarea id="code" spellcheck="false"><i><size=80>ゆ<size=40>ず</size><color=#0FC>᭄</color><color=#9ff>ꦿૢ₈⁸</color></size></i></textarea>
 
 <div class="info">
-<span id="counter">0文字</span>
-<span id="warning"></span>
+  <span id="counter">全角換算：0 / 50</span>
+  <span id="warning"></span>
+</div>
+
+<div class="controls">
+  <label class="switch">
+    <input type="checkbox" id="topiaMode" checked>
+    <span class="slider"></span>
+  </label>
+  <span>トピア特殊文字補正</span>
 </div>
 
 <div class="stage">
-
-<div class="stageTitle">
-TOPIA風プレビュー
-</div>
-
-<div id="preview"></div>
-
+  <div class="stageTitle">TOPIA実機風プレビュー</div>
+  <div id="preview" class="topia-mode"></div>
 </div>
 
 <div class="buttons">
+  <button class="copy" id="copy">コードをコピー</button>
+  <button class="clear" id="clear">クリア</button>
+</div>
 
-<button class="copy" id="copy">
-コードをコピー
-</button>
+<div class="samples">
 
-<button class="clear" id="clear">
-クリア
-</button>
+  <div class="samples-title">
+    実機比較サンプル
+  </div>
 
+  <button class="sample-button" id="sampleYuzuki">
+    🩵 ゆずき マイカラー
+  </button>
+
+  <button class="sample-button" id="sampleYuzuki3">
+    🩵 ゆずき 3段弾幕
+  </button>
+
+</div>
+
+<div class="note">
+※トピアの文字描画エンジンそのものをブラウザ上で使用しているわけではないため、
+特殊Unicode文字の位置は近似表示です。
+実機スクリーンショットを基準に補正値を調整していきます。
 </div>
 
 </main>
@@ -164,195 +334,444 @@ const input=document.getElementById("code");
 const preview=document.getElementById("preview");
 const counter=document.getElementById("counter");
 const warning=document.getElementById("warning");
+const topiaMode=document.getElementById("topiaMode");
+
 
 function escapeHTML(text){
 
-return text
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;");
+  return text
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
 
 }
+
+
+/* ===== 全角換算の目安 ===== */
+
+function topiaLength(text){
+
+  let total=0;
+
+  for(const char of Array.from(text)){
+
+    const code=char.codePointAt(0);
+
+    if(code<=0x7f){
+      total+=0.5;
+    }else{
+      total+=1;
+    }
+
+  }
+
+  return total;
+
+}
+
+
+/* ===== 特殊文字補正 ===== */
+
+function specialChar(char){
+
+  if(char==="⃟"){
+
+    return '<span class="diamond-combine">'+char+'</span>';
+
+  }
+
+  if(char==="꙰"){
+
+    return '<span class="scatter-combine">'+char+'</span>';
+
+  }
+
+  if(char==="᭄"){
+
+    return '<span class="mark-kudari">'+char+'</span>';
+
+  }
+
+  if(char==="ꦿ" || char==="ૢ"){
+
+    return '<span class="mark-ornament">'+char+'</span>';
+
+  }
+
+  if(char==="₈" || char==="⁸"){
+
+    return '<span class="mark-small-number">'+char+'</span>';
+
+  }
+
+  if(
+    char==="✺" ||
+    char==="✦" ||
+    char==="✧"
+  ){
+
+    return '<span class="mark-star">'+char+'</span>';
+
+  }
+
+  return escapeHTML(char);
+
+}
+
+
+function renderText(text){
+
+  let result="";
+
+  for(const char of Array.from(text)){
+    result+=specialChar(char);
+  }
+
+  return result;
+
+}
+
+
+/* ===== タグ解析 ===== */
+
+function parseLine(raw){
+
+  let output="";
+  let last=0;
+
+  const tag=
+  /(<\/?b>|<\/?i>|<size=([^>]+)>|<\/size>|<color=([^>]+)>|<\/color>)/gi;
+
+  let match;
+
+  while((match=tag.exec(raw))!==null){
+
+    output+=renderText(
+      raw.substring(last,match.index)
+    );
+
+    const original=match[0];
+    const lower=original.toLowerCase();
+
+
+    if(lower==="<b>"){
+
+      output+="<b>";
+
+    }
+
+    else if(lower==="</b>"){
+
+      output+="</b>";
+
+    }
+
+    else if(lower==="<i>"){
+
+      output+="<i>";
+
+    }
+
+    else if(lower==="</i>"){
+
+      output+="</i>";
+
+    }
+
+    else if(lower.startsWith("<size=")){
+
+      let size=parseFloat(match[2]);
+
+      if(isNaN(size)){
+        size=40;
+      }
+
+      /*
+        TOPIA実機寄せ倍率
+      */
+
+      let px=size*0.82;
+
+      px=Math.max(
+        10,
+        Math.min(px,130)
+      );
+
+      output+=
+        '<span style="font-size:'+
+        px+
+        'px;line-height:1;">';
+
+    }
+
+    else if(lower==="</size>"){
+
+      output+="</span>";
+
+    }
+
+    else if(lower.startsWith("<color=")){
+
+      let color=match[3].trim();
+
+      const valid=
+        /^#[0-9a-f]{3}([0-9a-f]{3})?$/i
+        .test(color);
+
+      if(!valid){
+
+        output+=
+          '<span class="invalid" style="color:#fff">';
+
+      }else{
+
+        output+=
+          '<span style="color:'+
+          color+
+          '">';
+
+      }
+
+    }
+
+    else if(lower==="</color>"){
+
+      output+="</span>";
+
+    }
+
+    last=tag.lastIndex;
+
+  }
+
+  output+=renderText(
+    raw.substring(last)
+  );
+
+  return output;
+
+}
+
+
+/* ===== プレビュー描画 ===== */
 
 function render(){
 
-let raw=input.value;
+  const raw=input.value;
 
-let output="";
-let last=0;
+  /*
+    \ua をトピアの行として処理
+  */
 
-const tag=
-/(\\ua|<\/?b>|<\/?i>|<size=([^>]+)>|<\/size>|<color=([^>]+)>|<\/color>)/gi;
+  const lines=raw.split(/\\ua/gi);
 
-let match;
+  let output="";
 
-while((match=tag.exec(raw))!==null){
+  for(let i=0;i<lines.length;i++){
 
-output+=escapeHTML(
-raw.substring(last,match.index)
+    /*
+      先頭が \ua の場合は
+      最初の空行を無視
+    */
+
+    if(
+      i===0 &&
+      lines[i]===""
+    ){
+      continue;
+    }
+
+    output+=
+      '<div class="topia-line">'+
+      parseLine(lines[i])+
+      '</div>';
+
+  }
+
+  preview.innerHTML=output;
+
+
+  /* ===== 文字数 ===== */
+
+  const length=topiaLength(raw);
+
+  const displayLength=
+    Number.isInteger(length)
+    ? length
+    : length.toFixed(1);
+
+  counter.textContent=
+    "全角換算目安："+
+    displayLength+
+    " / 50";
+
+
+  /* ===== カラーコード確認 ===== */
+
+  const colors=[
+    ...raw.matchAll(
+      /<color=([^>]+)>/gi
+    )
+  ];
+
+  let invalidColor=false;
+
+  for(const color of colors){
+
+    if(
+      !/^#[0-9a-f]{3}([0-9a-f]{3})?$/i
+      .test(color[1].trim())
+    ){
+
+      invalidColor=true;
+
+    }
+
+  }
+
+
+  if(length>50){
+
+    warning.textContent=
+      "⚠ 50文字を超える可能性があります";
+
+    warning.className="danger";
+
+  }
+
+  else if(invalidColor){
+
+    warning.textContent=
+      "⚠ カラーコードを確認";
+
+    warning.className="warning";
+
+  }
+
+  else{
+
+    warning.textContent="";
+
+  }
+
+}
+
+
+/* ===== 実機補正 ON/OFF ===== */
+
+topiaMode.addEventListener(
+  "change",
+  function(){
+
+    preview.classList.toggle(
+      "topia-mode",
+      this.checked
+    );
+
+  }
 );
 
-let t=match[0].toLowerCase();
 
-if(t==="\\ua"){
-
-output+="<br>";
-
-}
-
-else if(t==="<b>"){
-
-output+="<b>";
-
-}
-
-else if(t==="</b>"){
-
-output+="</b>";
-
-}
-
-else if(t==="<i>"){
-
-output+="<i>";
-
-}
-
-else if(t==="</i>"){
-
-output+="</i>";
-
-}
-
-else if(t.startsWith("<size=")){
-
-let size=parseFloat(match[2]);
-
-if(isNaN(size)) size=40;
-
-let px=size*0.72;
-
-if(px>100) px=100;
-if(px<10) px=10;
-
-output+=
-'<span style="font-size:'+px+'px">';
-
-}
-
-else if(t==="</size>"){
-
-output+="</span>";
-
-}
-
-else if(t.startsWith("<color=")){
-
-let color=match[3];
-
-if(
-!/^#[0-9a-f]{3,8}$/i.test(color)
-&&
-!/^[a-z]+$/i.test(color)
-){
-
-color="#ffffff";
-
-}
-
-output+=
-'<span style="color:'+color+'">';
-
-}
-
-else if(t==="</color>"){
-
-output+="</span>";
-
-}
-
-last=tag.lastIndex;
-
-}
-
-output+=escapeHTML(
-raw.substring(last)
-);
-
-preview.innerHTML=output;
-
-let length=Array.from(raw).length;
-
-counter.textContent=
-"コード文字数："+length;
-
-if(length>100){
-
-warning.textContent=
-"⚠ 100文字を超えています";
-
-warning.className="warning";
-
-}else{
-
-warning.textContent="";
-
-}
-
-}
+/* ===== 入力 ===== */
 
 input.addEventListener(
-"input",
-render
+  "input",
+  render
 );
+
+
+/* ===== クリア ===== */
 
 document
 .getElementById("clear")
 .addEventListener(
-"click",
-function(){
+  "click",
+  function(){
 
-input.value="";
-render();
-input.focus();
+    input.value="";
 
-});
+    render();
+
+    input.focus();
+
+  }
+);
+
+
+/* ===== コピー ===== */
 
 document
 .getElementById("copy")
 .addEventListener(
-"click",
-async function(){
+  "click",
+  async function(){
 
-try{
+    try{
 
-await navigator.clipboard.writeText(
-input.value
+      await navigator.clipboard.writeText(
+        input.value
+      );
+
+      this.textContent=
+        "コピーしました ✓";
+
+      const button=this;
+
+      setTimeout(
+        function(){
+
+          button.textContent=
+            "コードをコピー";
+
+        },
+        1200
+      );
+
+    }
+
+    catch(e){
+
+      input.select();
+
+      document.execCommand("copy");
+
+    }
+
+  }
 );
 
-this.textContent=
-"コピーしました ✓";
 
-let button=this;
+/* ===== サンプル ===== */
 
-setTimeout(function(){
+document
+.getElementById("sampleYuzuki")
+.addEventListener(
+  "click",
+  function(){
 
-button.textContent=
-"コードをコピー";
+    input.value=
+      '<i><size=80>ゆ<size=40>ず</size><color=#0FC>᭄</color><color=#9ff>ꦿૢ₈⁸</color></size></i>';
 
-},1200);
+    render();
 
-}
+  }
+);
 
-catch(e){
 
-input.select();
+document
+.getElementById("sampleYuzuki3")
+.addEventListener(
+  "click",
+  function(){
 
-document.execCommand("copy");
+    input.value=
+      '\\ua<i><size=60><color=#9ff>　꙰♡✺꙰\\ua👏ゆ⃟ず⃟き⃟👏\\ua　꙰♡✺꙰</color></size></i>';
 
-}
+    render();
 
-});
+  }
+);
+
 
 render();
 
