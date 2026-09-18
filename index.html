@@ -3,17 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>トピア弾幕プレビュー v4</title>
+
+<title>トピア弾幕プレビュー v5</title>
 
 <style>
 *{
   box-sizing:border-box;
 }
 
+:root{
+  --bg:#101116;
+  --panel:#1b1d26;
+  --panel2:#171920;
+  --border:#414451;
+  --text:#fff;
+  --sub:#999;
+  --pink:#ff86b4;
+}
+
 body{
   margin:0;
-  background:#101116;
-  color:#fff;
+  background:var(--bg);
+  color:var(--text);
+
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -37,15 +49,19 @@ h1{
   margin:5px 0 16px;
   color:#aaa;
   font-size:13px;
-  line-height:1.5;
+  line-height:1.6;
 }
+
+/* =========================
+   入力
+========================= */
 
 textarea{
   width:100%;
   height:170px;
   padding:14px;
 
-  background:#1b1d26;
+  background:var(--panel);
   color:#fff;
 
   border:1px solid #484b57;
@@ -60,6 +76,7 @@ textarea{
 .info{
   display:flex;
   justify-content:space-between;
+  align-items:center;
   gap:10px;
 
   margin:8px 2px 12px;
@@ -76,28 +93,26 @@ textarea{
   color:#ff7373;
 }
 
-
 /* =========================
    スイッチ
 ========================= */
 
-.controls{
+.modeRow{
   display:flex;
   align-items:center;
   gap:10px;
 
-  margin-bottom:13px;
-
-  color:#bbb;
-  font-size:13px;
+  margin:12px 0;
 }
 
 .switch{
   position:relative;
   display:inline-block;
 
-  width:46px;
-  height:26px;
+  width:48px;
+  height:27px;
+
+  flex:none;
 }
 
 .switch input{
@@ -119,11 +134,11 @@ textarea{
 
   position:absolute;
 
-  width:20px;
-  height:20px;
+  width:21px;
+  height:21px;
 
-  top:3px;
   left:3px;
+  top:3px;
 
   background:#fff;
   border-radius:50%;
@@ -132,361 +147,228 @@ textarea{
 }
 
 .switch input:checked + .slider{
-  background:#ff86b4;
+  background:var(--pink);
 }
 
 .switch input:checked + .slider:before{
-  transform:translateX(20px);
+  transform:translateX(21px);
 }
 
+.modeText{
+  color:#bbb;
+  font-size:14px;
+}
 
 /* =========================
-   プレビュー
+   TOPIA表示エリア
 ========================= */
 
 .stage{
   position:relative;
 
-  min-height:390px;
+  width:100%;
+  height:230px;
 
   overflow:hidden;
 
-  border:1px solid #3b3d49;
+  border:1px solid var(--border);
   border-radius:18px;
 
   background:
-    radial-gradient(
-      circle at 20% 20%,
-      #3b4057 0,
-      transparent 30%
-    ),
-    radial-gradient(
-      circle at 80% 80%,
-      #392d4b 0,
-      transparent 30%
-    ),
     linear-gradient(
-      145deg,
-      #242735,
-      #111218
-    );
+      rgba(10,11,15,.48),
+      rgba(10,11,15,.48)
+    ),
+    radial-gradient(
+      circle at 25% 30%,
+      #45495d,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 80% 75%,
+      #493450,
+      transparent 42%
+    ),
+    #20222c;
 }
 
 .stageTitle{
   position:absolute;
 
-  top:12px;
-  left:14px;
+  top:10px;
+  left:13px;
 
-  color:#999;
+  color:#aaa;
   font-size:12px;
+
+  z-index:20;
 }
+
+/*
+  TOPIAではコメントが
+  左側を基準に表示されるため
+  centerにはしない
+*/
 
 #preview{
   position:absolute;
 
-  top:65px;
-  left:12px;
-  right:12px;
+  left:20px;
+  top:50%;
 
-  min-height:280px;
+  transform:translateY(-50%);
 
-  white-space:pre;
+  width:calc(100% - 40px);
+
+  white-space:nowrap;
+
   text-align:left;
 
   text-shadow:
-    0 2px 3px #000,
-    0 0 7px rgba(255,255,255,.15);
+    0 2px 3px rgba(0,0,0,.85),
+    0 0 5px rgba(255,255,255,.08);
 }
 
-.topia-line{
-  position:relative;
+.topiaLine{
   display:block;
 
-  min-height:100px;
+  position:relative;
+
+  min-height:58px;
 
   white-space:nowrap;
 }
 
+/* =========================
+   TOPIA文字
+========================= */
 
-/* ==================================================
-   ゆずき実機ユニット
-================================================== */
+.topiaText{
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Hiragino Sans",
+    sans-serif;
 
-.yuzuki-unit{
-  position:relative;
-
-  display:inline-block;
-
-  width:330px;
-  height:150px;
-
-  vertical-align:top;
-
-  transform-origin:left top;
+  transform-origin:left center;
 }
 
+/* =========================
+   特殊Unicode
+========================= */
 
-/* ゆ */
+/*
+  基本方針：
 
-.yu{
-  position:absolute;
+  Unicodeを分解しない。
+  Safariにそのまま描画させる。
 
-  left:0;
-  top:27px;
+  ここがv4との大きな違い。
+*/
 
-  color:#fff;
+.rawUnicode{
+  display:inline;
+}
 
-  font-size:82px;
-  line-height:1;
+/* ꙰♡✺꙰ */
 
-  font-style:italic;
+.scatter{
+  display:inline;
 
   font-family:
     -apple-system,
     "Hiragino Sans",
     sans-serif;
-
-  z-index:5;
 }
 
+/* ⃟ */
 
-/* ず */
-
-.zu{
-  position:absolute;
-
-  left:105px;
-  top:62px;
-
-  color:#fff;
-
-  font-size:40px;
-  line-height:1;
-
-  font-style:italic;
-
-  z-index:6;
+.diamondText{
+  display:inline;
 }
-
 
 /* =========================
-   特殊エフェクト全体
+   実機補正
 ========================= */
 
-.effect{
-  position:absolute;
+/*
+  TOPIA実機補正ONの場合だけ
+  特殊パターンに軽い補正を掛ける。
 
-  left:140px;
-  top:0;
+  字形そのものを作り直さない。
+*/
 
-  width:180px;
-  height:150px;
-
-  transform-origin:center center;
-}
-
-
-/* ᭄ */
-
-.kudari{
-  position:absolute;
-
-  left:0;
-  top:-7px;
-
-  color:#00ffcc;
-
-  font-size:112px;
-  line-height:1;
-
-  font-style:italic;
+.topiaCorrection .effectYuzuki{
+  display:inline-block;
 
   transform:
-    scaleX(.72)
-    scaleY(.96);
+    translateX(-4px)
+    translateY(3px)
+    scaleX(.92);
+
+  transform-origin:left center;
+}
+
+.topiaCorrection .scatter{
+  display:inline-block;
+
+  transform:scale(1.06);
 
   transform-origin:center;
-
-  z-index:1;
 }
-
-
-/* ꦿૢ */
-
-.heart{
-  position:absolute;
-
-  left:35px;
-  top:70px;
-
-  color:#99ffff;
-
-  font-size:61px;
-  line-height:1;
-
-  font-style:italic;
-
-  transform:
-    scaleX(.82)
-    scaleY(.76);
-
-  transform-origin:center;
-
-  z-index:4;
-}
-
-
-/* ₈ */
-
-.eightLow{
-  position:absolute;
-
-  left:91px;
-  top:40px;
-
-  color:#99ffff;
-
-  font-size:48px;
-  line-height:1;
-
-  font-weight:bold;
-
-  z-index:5;
-}
-
-
-/* ⁸ */
-
-.eightHigh{
-  position:absolute;
-
-  left:130px;
-  top:3px;
-
-  color:#99ffff;
-
-  font-size:50px;
-  line-height:1;
-
-  font-weight:bold;
-
-  z-index:5;
-}
-
 
 /* =========================
-   キャリブレーション
+   表示倍率
 ========================= */
 
-.calibration{
-  margin-top:14px;
-  padding:14px;
+.scalePanel{
+  margin-top:12px;
+  padding:12px;
 
-  background:#181a22;
+  background:var(--panel2);
 
-  border:1px solid #30323c;
-  border-radius:14px;
+  border:1px solid #30333d;
+  border-radius:13px;
 }
 
-.calibrationTitle{
-  margin-bottom:5px;
+.scaleTitle{
+  margin-bottom:9px;
 
-  font-size:15px;
-  font-weight:bold;
+  color:#bbb;
+  font-size:13px;
 }
 
-.calibrationSub{
-  margin-bottom:12px;
-
-  color:#999;
-  font-size:12px;
-  line-height:1.5;
+.scaleControls{
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
 
-.values{
-  padding:9px 10px;
-  margin-bottom:10px;
-
-  background:#111218;
-
-  border-radius:9px;
-
-  color:#aaa;
-  font-size:12px;
-
-  text-align:center;
-}
-
-.pad{
-  display:grid;
-
-  grid-template-columns:
-    repeat(3,1fr);
-
-  gap:7px;
-
-  max-width:330px;
-  margin:auto;
-}
-
-.pad button{
-  min-height:48px;
-
-  background:#30333f;
-  color:#fff;
+.scaleControls button{
+  width:48px;
+  height:42px;
 
   border:0;
   border-radius:10px;
+
+  background:#30333f;
+  color:#fff;
 
   font-size:20px;
   font-weight:bold;
 }
 
-.pad .empty{
-  visibility:hidden;
-}
-
-.zoom{
-  display:flex;
-  gap:7px;
-
-  margin-top:10px;
-}
-
-.zoom button{
+#scaleValue{
   flex:1;
 
-  padding:11px;
+  text-align:center;
 
-  background:#30333f;
-  color:#fff;
-
-  border:0;
-  border-radius:10px;
-
-  font-size:15px;
-  font-weight:bold;
+  color:#aaa;
+  font-size:13px;
 }
-
-.reset{
-  margin-top:9px;
-
-  width:100%;
-  padding:11px;
-
-  background:#402d36;
-  color:#ffb5cf;
-
-  border:0;
-  border-radius:10px;
-
-  font-size:14px;
-}
-
 
 /* =========================
-   通常ボタン
+   ボタン
 ========================= */
 
 .buttons{
@@ -499,7 +381,7 @@ textarea{
 .buttons button{
   flex:1;
 
-  padding:12px;
+  padding:13px;
 
   border:0;
   border-radius:12px;
@@ -518,13 +400,12 @@ textarea{
   color:#fff;
 }
 
-
 /* =========================
    サンプル
 ========================= */
 
 .samples{
-  margin-top:20px;
+  margin-top:18px;
   padding:14px;
 
   background:#181a22;
@@ -561,23 +442,47 @@ textarea{
   color:#888;
 
   font-size:12px;
-  line-height:1.6;
+  line-height:1.7;
+}
+
+/* =========================
+   スマホ
+========================= */
+
+@media(max-width:500px){
+
+  main{
+    padding:16px;
+  }
+
+  h1{
+    font-size:23px;
+  }
+
+  .stage{
+    height:220px;
+  }
+
+  #preview{
+    left:14px;
+    width:calc(100% - 28px);
+  }
+
 }
 
 </style>
 </head>
-
 
 <body>
 
 <main>
 
 <h1>
-✨ トピア弾幕プレビュー v4
+✨ トピア弾幕プレビュー v5
 </h1>
 
 <div class="sub">
-実機スクショを基準に特殊文字の位置を調整できるキャリブレーション版
+\ua・size・color・b・i・特殊Unicode対応
 </div>
 
 
@@ -598,13 +503,13 @@ spellcheck="false"
 </div>
 
 
-<div class="controls">
+<div class="modeRow">
 
 <label class="switch">
 
 <input
 type="checkbox"
-id="topiaMode"
+id="correction"
 checked
 >
 
@@ -612,7 +517,7 @@ checked
 
 </label>
 
-<span>
+<span class="modeText">
 TOPIA実機補正
 </span>
 
@@ -625,80 +530,35 @@ TOPIA実機補正
 TOPIA実機風プレビュー
 </div>
 
-<div id="preview"></div>
-
-</div>
-
-
-<!-- キャリブレーション -->
-
 <div
-class="calibration"
-id="calibration"
->
-
-<div class="calibrationTitle">
-🎯 特殊エフェクト位置調整
-</div>
-
-<div class="calibrationSub">
-実機画像を見ながら「᭄ꦿૢ₈⁸」の位置と大きさを調整できます。
-</div>
-
-
-<div
-class="values"
-id="values"
->
-X: 0　Y: 0　倍率: 1.00
-</div>
-
-
-<div class="pad">
-
-<div class="empty"></div>
-
-<button data-move="up">
-↑
-</button>
-
-<div class="empty"></div>
-
-
-<button data-move="left">
-←
-</button>
-
-<button data-move="down">
-↓
-</button>
-
-<button data-move="right">
-→
-</button>
+id="preview"
+class="topiaCorrection"
+></div>
 
 </div>
 
 
-<div class="zoom">
+<div class="scalePanel">
 
-<button id="smaller">
-− 小さく
+<div class="scaleTitle">
+プレビュー全体の大きさ
+</div>
+
+<div class="scaleControls">
+
+<button id="scaleDown">
+−
 </button>
 
-<button id="larger">
-＋ 大きく
+<div id="scaleValue">
+100%
+</div>
+
+<button id="scaleUp">
+＋
 </button>
 
 </div>
-
-
-<button
-class="reset"
-id="reset"
->
-初期位置に戻す
-</button>
 
 </div>
 
@@ -725,35 +585,54 @@ id="clear"
 <div class="samples">
 
 <div class="samplesTitle">
-実機比較サンプル
+実機テスト
 </div>
 
 <button
 class="sample"
 id="sampleYuzuki"
 >
-🩵 ゆずき実機テスト
+🩵 ゆずき特殊文字
 </button>
 
 <button
 class="sample"
 id="sampleThree"
 >
-🩵 ゆずき3段弾幕
+🩵 ゆずき3段
+</button>
+
+<button
+class="sample"
+id="sampleScatter"
+>
+✨ ꙰♡✺꙰ テスト
+</button>
+
+<button
+class="sample"
+id="sampleDiamond"
+>
+💎 ⃟ 結合文字テスト
 </button>
 
 </div>
 
 
 <div class="note">
-調整値はこの端末のブラウザに保存されます。
-TOPIA側とSafariではフォント描画方式が異なるため、実機確認済みパターンを優先して補正します。
+v5では特殊Unicodeを原則として分解せず、そのままブラウザへ渡します。
+TOPIAとSafariではフォント・Unicode結合処理が異なるため完全一致ではありませんが、
+実機確認できたパターンから補正値を追加できます。
 </div>
 
 </main>
 
 
 <script>
+
+/* ==================================================
+   DOM
+================================================== */
 
 const input =
 document.getElementById("code");
@@ -767,48 +646,27 @@ document.getElementById("counter");
 const warning =
 document.getElementById("warning");
 
-const topiaMode =
-document.getElementById("topiaMode");
+const correction =
+document.getElementById("correction");
 
-const calibration =
-document.getElementById("calibration");
-
-const values =
-document.getElementById("values");
+const scaleValue =
+document.getElementById("scaleValue");
 
 
 /* ==================================================
-   保存値
+   STATE
 ================================================== */
 
-let adjust = {
-
-  x:
-  Number(
-    localStorage.getItem(
-      "topiaEffectX"
-    )
-  ) || 0,
-
-  y:
-  Number(
-    localStorage.getItem(
-      "topiaEffectY"
-    )
-  ) || 0,
-
-  scale:
-  Number(
-    localStorage.getItem(
-      "topiaEffectScale"
-    )
-  ) || 1
-
-};
+let previewScale =
+Number(
+  localStorage.getItem(
+    "topiaPreviewScale"
+  )
+) || 1;
 
 
 /* ==================================================
-   ESCAPE
+   HTML ESCAPE
 ================================================== */
 
 function escapeHTML(text){
@@ -822,20 +680,503 @@ function escapeHTML(text){
 
 
 /* ==================================================
-   LENGTH
+   COLOR
 ================================================== */
+
+function safeColor(color){
+
+  color =
+  color.trim();
+
+
+  if(
+    /^#[0-9a-f]{3}$/i.test(color)
+    ||
+    /^#[0-9a-f]{6}$/i.test(color)
+  ){
+
+    return color;
+
+  }
+
+
+  return "#fff";
+
+}
+
+
+/* ==================================================
+   SIZE
+================================================== */
+
+/*
+  TOPIA size値 → Safari px
+
+  実機比較をしながら
+  後からこの係数だけ変更可能。
+*/
+
+function sizeToPx(size){
+
+  size =
+  Number(size);
+
+
+  if(
+    !Number.isFinite(size)
+  ){
+
+    size=40;
+
+  }
+
+
+  let px =
+  size * 0.82;
+
+
+  if(px<8){
+    px=8;
+  }
+
+
+  if(px>140){
+    px=140;
+  }
+
+
+  return px;
+
+}
+
+
+/* ==================================================
+   TOKENIZER
+================================================== */
+
+/*
+  v5ではタグを順番に読み取る。
+
+  sizeの入れ子
+  colorの入れ子
+
+  を壊しにくくする。
+*/
+
+function tokenize(text){
+
+  const regex =
+  /(\\ua|<\/?b>|<\/?i>|<size=[^>]+>|<\/size>|<color=[^>]+>|<\/color>)/gi;
+
+
+  const tokens=[];
+
+  let last=0;
+
+  let match;
+
+
+  while(
+    (match=regex.exec(text))!==null
+  ){
+
+    if(
+      match.index>last
+    ){
+
+      tokens.push({
+        type:"text",
+        value:
+        text.slice(
+          last,
+          match.index
+        )
+      });
+
+    }
+
+
+    tokens.push({
+      type:"tag",
+      value:match[0]
+    });
+
+
+    last =
+    regex.lastIndex;
+
+  }
+
+
+  if(
+    last<text.length
+  ){
+
+    tokens.push({
+      type:"text",
+      value:
+      text.slice(last)
+    });
+
+  }
+
+
+  return tokens;
+
+}
+
+
+/* ==================================================
+   特殊文字マーク
+================================================== */
+
+function markSpecial(text){
+
+  let safe =
+  escapeHTML(text);
+
+
+  /*
+    ゆずき特殊文字
+
+    Unicode列そのものは
+    分解しない。
+  */
+
+  safe =
+  safe.replace(
+    /᭄ꦿૢ₈⁸/g,
+    '<span class="effectYuzuki">᭄ꦿૢ₈⁸</span>'
+  );
+
+
+  safe =
+  safe.replace(
+    /꙰♡✺꙰/g,
+    '<span class="scatter">꙰♡✺꙰</span>'
+  );
+
+
+  /*
+    ⃟ を含む文字列は
+    Unicodeのまま表示。
+  */
+
+  return safe;
+
+}
+
+
+/* ==================================================
+   PARSER
+================================================== */
+
+function parse(text){
+
+  const tokens =
+  tokenize(text);
+
+
+  let html="";
+
+
+  /*
+    閉じタグを安全に扱うための
+    スタック
+  */
+
+  const stack=[];
+
+
+  for(
+    const token
+    of tokens
+  ){
+
+    if(
+      token.type==="text"
+    ){
+
+      html+=
+      markSpecial(
+        token.value
+      );
+
+      continue;
+
+    }
+
+
+    const tag =
+    token.value;
+
+
+    const lower =
+    tag.toLowerCase();
+
+
+    /* \ua */
+
+    if(
+      lower==="\\ua"
+    ){
+
+      /*
+        開いているspanを壊さず
+        見た目だけ改行
+      */
+
+      html+=
+      '<br class="uaBreak">';
+
+      continue;
+
+    }
+
+
+    /* bold */
+
+    if(
+      lower==="<b>"
+    ){
+
+      html+="<b>";
+
+      stack.push("b");
+
+      continue;
+
+    }
+
+
+    if(
+      lower==="</b>"
+    ){
+
+      html+="</b>";
+
+      removeLast(
+        stack,
+        "b"
+      );
+
+      continue;
+
+    }
+
+
+    /* italic */
+
+    if(
+      lower==="<i>"
+    ){
+
+      html+="<i>";
+
+      stack.push("i");
+
+      continue;
+
+    }
+
+
+    if(
+      lower==="</i>"
+    ){
+
+      html+="</i>";
+
+      removeLast(
+        stack,
+        "i"
+      );
+
+      continue;
+
+    }
+
+
+    /* size */
+
+    if(
+      lower.startsWith(
+        "<size="
+      )
+    ){
+
+      const value =
+      tag.match(
+        /<size=([^>]+)>/i
+      );
+
+
+      const size =
+      value
+      ?
+      value[1]
+      :
+      40;
+
+
+      html+=
+      '<span class="topiaText" style="font-size:'+
+      sizeToPx(size)+
+      'px;line-height:1;">';
+
+
+      stack.push(
+        "size"
+      );
+
+
+      continue;
+
+    }
+
+
+    if(
+      lower==="</size>"
+    ){
+
+      html+="</span>";
+
+      removeLast(
+        stack,
+        "size"
+      );
+
+      continue;
+
+    }
+
+
+    /* color */
+
+    if(
+      lower.startsWith(
+        "<color="
+      )
+    ){
+
+      const value =
+      tag.match(
+        /<color=([^>]+)>/i
+      );
+
+
+      const color =
+      value
+      ?
+      safeColor(
+        value[1]
+      )
+      :
+      "#fff";
+
+
+      html+=
+      '<span style="color:'+
+      color+
+      ';">';
+
+
+      stack.push(
+        "color"
+      );
+
+
+      continue;
+
+    }
+
+
+    if(
+      lower==="</color>"
+    ){
+
+      html+="</span>";
+
+      removeLast(
+        stack,
+        "color"
+      );
+
+      continue;
+
+    }
+
+  }
+
+
+  return html;
+
+}
+
+
+/* ==================================================
+   STACK
+================================================== */
+
+function removeLast(
+  stack,
+  type
+){
+
+  for(
+    let i=stack.length-1;
+    i>=0;
+    i--
+  ){
+
+    if(
+      stack[i]===type
+    ){
+
+      stack.splice(
+        i,
+        1
+      );
+
+      return;
+
+    }
+
+  }
+
+}
+
+
+/* ==================================================
+   TOPIA LENGTH
+================================================== */
+
+/*
+  現時点では実機で
+
+  「全角50文字以内」
+
+  という表示を確認済み。
+
+  半角の正確な換算ルールは
+  未確認なので目安として表示。
+*/
 
 function topiaLength(text){
 
   let total=0;
+
 
   for(
     const char
     of Array.from(text)
   ){
 
+    const cp =
+    char.codePointAt(0);
+
+
     if(
-      char.codePointAt(0)<=0x7f
+      cp<=0x7f
     ){
 
       total+=0.5;
@@ -848,265 +1189,8 @@ function topiaLength(text){
 
   }
 
+
   return total;
-
-}
-
-
-/* ==================================================
-   SIZE
-================================================== */
-
-function sizePx(size){
-
-  let px =
-  Number(size)*0.82;
-
-  if(px<10){
-    px=10;
-  }
-
-  if(px>130){
-    px=130;
-  }
-
-  return px;
-
-}
-
-
-/* ==================================================
-   通常パーサー
-================================================== */
-
-function parseNormal(raw){
-
-  let output="";
-  let last=0;
-
-  const regex =
-  /(<\/?b>|<\/?i>|<size=([^>]+)>|<\/size>|<color=([^>]+)>|<\/color>)/gi;
-
-  let match;
-
-
-  while(
-    (match=regex.exec(raw))!==null
-  ){
-
-    output+=
-    escapeHTML(
-      raw.substring(
-        last,
-        match.index
-      )
-    );
-
-
-    const lower =
-    match[0].toLowerCase();
-
-
-    if(lower==="<b>"){
-
-      output+="<b>";
-
-    }
-
-    else if(lower==="</b>"){
-
-      output+="</b>";
-
-    }
-
-    else if(lower==="<i>"){
-
-      output+="<i>";
-
-    }
-
-    else if(lower==="</i>"){
-
-      output+="</i>";
-
-    }
-
-    else if(
-      lower.startsWith(
-        "<size="
-      )
-    ){
-
-      let size =
-      parseFloat(
-        match[2]
-      );
-
-      if(isNaN(size)){
-        size=40;
-      }
-
-      output+=
-      '<span style="font-size:'+
-      sizePx(size)+
-      'px;line-height:1;">';
-
-    }
-
-    else if(
-      lower==="</size>"
-    ){
-
-      output+="</span>";
-
-    }
-
-    else if(
-      lower.startsWith(
-        "<color="
-      )
-    ){
-
-      let color =
-      match[3].trim();
-
-      if(
-        !/^#[0-9a-f]{3}([0-9a-f]{3})?$/i
-        .test(color)
-      ){
-
-        color="#fff";
-
-      }
-
-      output+=
-      '<span style="color:'+
-      color+
-      '">';
-
-    }
-
-    else if(
-      lower==="</color>"
-    ){
-
-      output+="</span>";
-
-    }
-
-
-    last =
-    regex.lastIndex;
-
-  }
-
-
-  output+=
-  escapeHTML(
-    raw.substring(last)
-  );
-
-
-  return output;
-
-}
-
-
-/* ==================================================
-   ゆずきユニット
-================================================== */
-
-function yuzukiUnit(){
-
-  return `
-
-  <span class="yuzuki-unit">
-
-    <span class="yu">
-      ゆ
-    </span>
-
-    <span class="zu">
-      ず
-    </span>
-
-    <span
-      class="effect"
-      style="
-      transform:
-      translate(
-        ${adjust.x}px,
-        ${adjust.y}px
-      )
-      scale(
-        ${adjust.scale}
-      );
-      "
-    >
-
-      <span class="kudari">
-        ᭄
-      </span>
-
-      <span class="heart">
-        ꦿૢ
-      </span>
-
-      <span class="eightLow">
-        ₈
-      </span>
-
-      <span class="eightHigh">
-        ⁸
-      </span>
-
-    </span>
-
-  </span>
-
-  `;
-
-}
-
-
-/* ==================================================
-   TOPIA実機モード
-================================================== */
-
-function parseTopia(raw){
-
-  /*
-    今回実機確認済みの
-    ゆずきコード全体を検出
-  */
-
-  const pattern =
-  /<i><size=80>ゆ<size=40>ず<\/size><color=#0fc>᭄<\/color><color=#9ff>ꦿૢ₈⁸<\/color><\/size><\/i>/gi;
-
-
-  const token =
-  "___YUZUKI_TOPIA_UNIT___";
-
-
-  let work =
-  raw.replace(
-    pattern,
-    token
-  );
-
-
-  let html =
-  parseNormal(work);
-
-
-  html =
-  html.replaceAll(
-    token,
-    yuzukiUnit()
-  );
-
-
-  return html;
 
 }
 
@@ -1121,71 +1205,48 @@ function render(){
   input.value;
 
 
-  const lines =
-  raw.split(/\\ua/gi);
+  let html =
+  parse(raw);
 
 
-  let output="";
+  preview.innerHTML =
+  html;
 
 
-  for(
-    let i=0;
-    i<lines.length;
-    i++
+  if(
+    correction.checked
   ){
 
-    if(
-      i===0 &&
-      lines[i]===""
-    ){
-      continue;
-    }
+    preview.classList.add(
+      "topiaCorrection"
+    );
 
+  }else{
 
-    let html;
-
-
-    if(topiaMode.checked){
-
-      html =
-      parseTopia(
-        lines[i]
-      );
-
-    }else{
-
-      html =
-      parseNormal(
-        lines[i]
-      );
-
-    }
-
-
-    output+=
-    '<div class="topia-line">'+
-    html+
-    '</div>';
+    preview.classList.remove(
+      "topiaCorrection"
+    );
 
   }
 
 
-  preview.innerHTML =
-  output;
+  preview.style.fontSize =
+  (40*previewScale)+
+  "px";
 
 
-  updateInfo();
+  updateCounter();
 
-  updateValues();
+  updateScale();
 
 }
 
 
 /* ==================================================
-   INFO
+   COUNTER
 ================================================== */
 
-function updateInfo(){
+function updateCounter(){
 
   const length =
   topiaLength(
@@ -1193,7 +1254,7 @@ function updateInfo(){
   );
 
 
-  const display =
+  const shown =
   Number.isInteger(length)
   ?
   length
@@ -1203,17 +1264,29 @@ function updateInfo(){
 
   counter.textContent =
   "全角換算目安："+
-  display+
+  shown+
   " / 50";
 
 
-  if(length>50){
+  if(
+    length>50
+  ){
 
     warning.textContent =
-    "⚠ 長すぎる可能性";
+    "⚠ 50文字超過の可能性";
 
     warning.className =
     "danger";
+
+  }else if(
+    length>=45
+  ){
+
+    warning.textContent =
+    "⚠ 上限付近";
+
+    warning.className =
+    "warning";
 
   }else{
 
@@ -1225,124 +1298,41 @@ function updateInfo(){
 
 
 /* ==================================================
-   VALUES
-================================================== */
-
-function updateValues(){
-
-  values.textContent =
-  "X: "+
-  adjust.x+
-  "　Y: "+
-  adjust.y+
-  "　倍率: "+
-  adjust.scale.toFixed(2);
-
-}
-
-
-/* ==================================================
-   SAVE
-================================================== */
-
-function saveAdjust(){
-
-  localStorage.setItem(
-    "topiaEffectX",
-    adjust.x
-  );
-
-  localStorage.setItem(
-    "topiaEffectY",
-    adjust.y
-  );
-
-  localStorage.setItem(
-    "topiaEffectScale",
-    adjust.scale
-  );
-
-}
-
-
-/* ==================================================
-   MOVE
-================================================== */
-
-document
-.querySelectorAll(
-  "[data-move]"
-)
-.forEach(
-  button=>{
-
-    button.addEventListener(
-      "click",
-      function(){
-
-        const move =
-        this.dataset.move;
-
-
-        /*
-          1回 3px
-        */
-
-        if(move==="up"){
-
-          adjust.y-=3;
-
-        }
-
-        if(move==="down"){
-
-          adjust.y+=3;
-
-        }
-
-        if(move==="left"){
-
-          adjust.x-=3;
-
-        }
-
-        if(move==="right"){
-
-          adjust.x+=3;
-
-        }
-
-
-        saveAdjust();
-
-        render();
-
-      }
-    );
-
-  }
-);
-
-
-/* ==================================================
    SCALE
 ================================================== */
 
+function updateScale(){
+
+  scaleValue.textContent =
+  Math.round(
+    previewScale*100
+  )+
+  "%";
+
+}
+
+
 document
 .getElementById(
-  "larger"
+  "scaleUp"
 )
 .addEventListener(
   "click",
   function(){
 
-    adjust.scale+=0.03;
+    previewScale+=0.05;
 
-    if(adjust.scale>2){
-      adjust.scale=2;
+
+    if(
+      previewScale>1.5
+    ){
+
+      previewScale=1.5;
+
     }
 
-    saveAdjust();
+
+    saveScale();
 
     render();
 
@@ -1352,19 +1342,25 @@ document
 
 document
 .getElementById(
-  "smaller"
+  "scaleDown"
 )
 .addEventListener(
   "click",
   function(){
 
-    adjust.scale-=0.03;
+    previewScale-=0.05;
 
-    if(adjust.scale<0.4){
-      adjust.scale=0.4;
+
+    if(
+      previewScale<0.5
+    ){
+
+      previewScale=0.5;
+
     }
 
-    saveAdjust();
+
+    saveScale();
 
     render();
 
@@ -1372,30 +1368,14 @@ document
 );
 
 
-/* ==================================================
-   RESET
-================================================== */
+function saveScale(){
 
-document
-.getElementById(
-  "reset"
-)
-.addEventListener(
-  "click",
-  function(){
+  localStorage.setItem(
+    "topiaPreviewScale",
+    previewScale
+  );
 
-    adjust={
-      x:0,
-      y:0,
-      scale:1
-    };
-
-    saveAdjust();
-
-    render();
-
-  }
-);
+}
 
 
 /* ==================================================
@@ -1408,20 +1388,9 @@ input.addEventListener(
 );
 
 
-topiaMode.addEventListener(
+correction.addEventListener(
   "change",
-  function(){
-
-    calibration.style.display =
-    this.checked
-    ?
-    "block"
-    :
-    "none";
-
-    render();
-
-  }
+  render
 );
 
 
@@ -1449,8 +1418,7 @@ document
       "コピーしました ✓";
 
 
-      const button =
-      this;
+      const button=this;
 
 
       setTimeout(
@@ -1502,7 +1470,7 @@ document
 
 
 /* ==================================================
-   SAMPLE
+   SAMPLES
 ================================================== */
 
 document
@@ -1532,6 +1500,40 @@ document
 
     input.value =
     '\\ua<i><size=60><color=#9ff>　꙰♡✺꙰\\ua👏ゆ⃟ず⃟き⃟👏\\ua　꙰♡✺꙰</color></size></i>';
+
+    render();
+
+  }
+);
+
+
+document
+.getElementById(
+  "sampleScatter"
+)
+.addEventListener(
+  "click",
+  function(){
+
+    input.value =
+    '\\ua<i><size=60><color=#9ff>꙰♡✺꙰</color></size></i>';
+
+    render();
+
+  }
+);
+
+
+document
+.getElementById(
+  "sampleDiamond"
+)
+.addEventListener(
+  "click",
+  function(){
+
+    input.value =
+    '\\ua<size=60><color=#9ff>👏ゆ⃟ず⃟き⃟👏</color></size>';
 
     render();
 
