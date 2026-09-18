@@ -3,32 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>トピア弾幕プレビュー v10</title>
+<title>トピア弾幕プレビュー v11</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 html,body{
   margin:0;
-  padding:0;
   background:#101116;
   color:#fff;
 }
 
 body{
   font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Hiragino Sans",
-    "Hiragino Kaku Gothic ProN",
-    "Noto Sans JP",
-    sans-serif;
+  -apple-system,
+  BlinkMacSystemFont,
+  "Hiragino Sans",
+  "Hiragino Kaku Gothic ProN",
+  sans-serif;
 }
 
 main{
-  width:100%;
   max-width:800px;
   margin:auto;
   padding:18px;
@@ -47,7 +42,6 @@ h1{
 }
 
 textarea{
-  display:block;
   width:100%;
   height:180px;
   resize:vertical;
@@ -77,7 +71,6 @@ textarea:focus{
   align-items:center;
 
   min-height:48px;
-
   padding:8px 3px;
 
   color:#aaa;
@@ -90,9 +83,8 @@ textarea:focus{
 
 .stage{
   position:relative;
-
   width:100%;
-  height:380px;
+  height:390px;
 
   overflow:hidden;
 
@@ -100,21 +92,21 @@ textarea:focus{
   border-radius:18px;
 
   background:
-    radial-gradient(
-      circle at 12% 12%,
-      rgba(70,78,108,.45),
-      transparent 34%
-    ),
-    radial-gradient(
-      circle at 90% 90%,
-      rgba(73,46,87,.35),
-      transparent 38%
-    ),
-    linear-gradient(
-      145deg,
-      #222532,
-      #14151c
-    );
+  radial-gradient(
+    circle at 15% 15%,
+    rgba(70,78,108,.45),
+    transparent 34%
+  ),
+  radial-gradient(
+    circle at 90% 90%,
+    rgba(73,46,87,.35),
+    transparent 38%
+  ),
+  linear-gradient(
+    145deg,
+    #222532,
+    #14151c
+  );
 }
 
 .stageTitle{
@@ -122,184 +114,19 @@ textarea:focus{
   top:13px;
   left:14px;
 
-  z-index:10;
+  z-index:2;
 
   color:#999;
   font-size:12px;
 }
 
-/*
-  TOPIA表示領域
-
-  v10では中央揃えにしない。
-  TOPIAスクショと同じく、
-  左側から文字列を構成する。
-*/
-#preview{
+canvas{
   position:absolute;
+  inset:0;
 
-  left:42px;
-  top:105px;
-
-  white-space:nowrap;
-
-  transform-origin:left center;
-
-  font-size:40px;
-  line-height:1;
-
-  text-shadow:
-    0 3px 2px rgba(0,0,0,.85),
-    0 0 2px rgba(0,0,0,.55);
+  width:100%;
+  height:100%;
 }
-
-/*
-  通常文字
-*/
-.unit{
-  position:relative;
-  display:inline-block;
-
-  vertical-align:baseline;
-
-  transform-origin:center center;
-}
-
-/*
-  italic
-*/
-.topia-i{
-  font-style:italic;
-}
-
-/*
-  bold
-*/
-.topia-b{
-  font-weight:700;
-}
-
-
-/* =========================
-   TOPIA特殊文字補正
-   ========================= */
-
-/*
-  ᭄
-
-  TOPIA実機では通常のSafari表示より
-  大きく縦方向へ展開して見えるため、
-  専用補正を行う。
-*/
-.fx-long{
-  position:relative;
-
-  display:inline-block;
-
-  width:.80em;
-
-  margin-left:-.20em;
-  margin-right:-.05em;
-
-  transform:
-    translateY(.08em)
-    scaleX(.82)
-    scaleY(1.25);
-
-  transform-origin:center center;
-
-  z-index:2;
-}
-
-
-/*
-  ꦿૢ
-
-  TOPIAでは直前の᭄へ重なるように
-  描画される傾向を再現。
-*/
-.fx-cluster{
-  position:relative;
-
-  display:inline-block;
-
-  margin-left:-.48em;
-
-  transform:
-    translateY(.18em)
-    scaleX(.90)
-    scaleY(1.02);
-
-  transform-origin:left center;
-
-  z-index:3;
-}
-
-
-/*
-  上付き・下付き数字
-*/
-.fx-super{
-  position:relative;
-
-  display:inline-block;
-
-  margin-left:-.16em;
-
-  transform:
-    translateY(-.58em)
-    scale(.78);
-
-  transform-origin:left center;
-
-  z-index:5;
-}
-
-.fx-sub{
-  position:relative;
-
-  display:inline-block;
-
-  margin-left:-.25em;
-
-  transform:
-    translateY(.38em)
-    scale(.82);
-
-  transform-origin:left center;
-
-  z-index:5;
-}
-
-
-/*
-  結合文字系
-*/
-.fx-combining{
-  position:relative;
-
-  display:inline-block;
-
-  margin-left:-.38em;
-
-  transform-origin:center center;
-
-  z-index:4;
-}
-
-
-/*
-  改行
-*/
-.topia-line{
-  display:block;
-  height:.96em;
-}
-
-
-/* =========================
-   ボタン
-   ========================= */
 
 .buttons{
   display:flex;
@@ -308,6 +135,8 @@ textarea:focus{
 }
 
 button{
+  flex:1;
+
   min-height:52px;
 
   border:0;
@@ -315,31 +144,22 @@ button{
 
   font-size:16px;
   font-weight:700;
-
-  cursor:pointer;
 }
 
 .copy{
-  flex:1;
   background:#ff82b2;
   color:#111;
 }
 
 .clear{
-  flex:1;
   background:#30333f;
   color:#fff;
 }
 
-
-/* =========================
-   状態表示
-   ========================= */
-
-.status{
+.panel{
   margin-top:16px;
 
-  padding:15px;
+  padding:16px;
 
   border:1px solid #343744;
   border-radius:16px;
@@ -347,28 +167,25 @@ button{
   background:#161820;
 }
 
-.statusTitle{
+.panelTitle{
   margin-bottom:8px;
+
+  font-size:16px;
   font-weight:700;
 }
 
-.ok{
-  color:#8be9b0;
+.good{
+  color:#86e7ac;
   font-size:13px;
 }
 
-.note{
-  margin-top:8px;
+.small{
+  margin-top:9px;
 
   color:#8f919a;
   font-size:12px;
-  line-height:1.65;
+  line-height:1.7;
 }
-
-
-/* =========================
-   モバイル
-   ========================= */
 
 @media(max-width:500px){
 
@@ -380,92 +197,70 @@ button{
     font-size:23px;
   }
 
-  textarea{
-    height:170px;
-  }
-
   .stage{
     height:365px;
-  }
-
-  #preview{
-    left:32px;
-    top:105px;
   }
 }
 </style>
 </head>
 
-
 <body>
 
 <main>
 
-<h1>✨ トピア弾幕プレビュー v10</h1>
+<h1>✨ トピア弾幕プレビュー v11</h1>
 
 <div class="sub">
-コードを貼るだけでTOPIA実機の特殊文字配置を自動補正
+Canvas描画＋TOPIA実機キャリブレーション
 </div>
 
-
-<textarea id="code" spellcheck="false"><i><size=80>ゆ<size=40>ず</size><color=#0FC>᭄</color><color=#9ff>ꦿૢ₈⁸</color></size></i></textarea>
-
+<textarea
+id="code"
+spellcheck="false"
+><i><size=80>ゆ<size=40>ず</size><color=#0FC>᭄</color><color=#9ff>ꦿૢ₈⁸</color></size></i></textarea>
 
 <div class="info">
-
-<span id="counter">
-推定：0 / 50
-</span>
-
-<span id="warning"></span>
-
+  <span id="counter">推定：0 / 50</span>
+  <span id="warning"></span>
 </div>
 
+<div class="stage" id="stage">
 
-<div class="stage">
+  <div class="stageTitle">
+    TOPIA Canvas プレビュー
+  </div>
 
-<div class="stageTitle">
-TOPIA実機風プレビュー
+  <canvas id="canvas"></canvas>
+
 </div>
-
-<div id="preview"></div>
-
-</div>
-
 
 <div class="buttons">
 
-<button
-class="copy"
-id="copy"
->
-コードをコピー
-</button>
+  <button class="copy" id="copy">
+    コードをコピー
+  </button>
 
-<button
-class="clear"
-id="clear"
->
-クリア
-</button>
+  <button class="clear" id="clear">
+    クリア
+  </button>
 
 </div>
 
+<div class="panel">
 
-<div class="status">
+  <div class="panelTitle">
+    🧪 v11 Canvasレンダラー
+  </div>
 
-<div class="statusTitle">
-🔬 v10 レンダラー
-</div>
+  <div class="good">
+    ✓ TOPIA実機補正プロファイル ON
+  </div>
 
-<div class="ok">
-✓ TOPIA特殊Unicode自動補正 ON
-</div>
-
-<div class="note">
-᭄・ꦿૢ・上付き/下付き文字・結合文字を通常のSafari描画から分離し、
-TOPIA実機スクリーンショットを基準に位置関係を補正します。
-</div>
+  <div class="small">
+    HTML文字配置ではなくCanvas上へ直接描画します。
+    size・color・b・i・\ua・特殊Unicodeを解析し、
+    実機確認済みパターンには専用の重なり補正を適用します。
+  </div>
 
 </div>
 
@@ -474,11 +269,18 @@ TOPIA実機スクリーンショットを基準に位置関係を補正します
 
 <script>
 
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
 const input =
 document.getElementById("code");
 
-const preview =
-document.getElementById("preview");
+const canvas =
+document.getElementById("canvas");
+
+const stage =
+document.getElementById("stage");
 
 const counter =
 document.getElementById("counter");
@@ -486,450 +288,762 @@ document.getElementById("counter");
 const warning =
 document.getElementById("warning");
 
+const ctx =
+canvas.getContext("2d");
 
-/* ======================================
-   HTML escape
-====================================== */
 
-function escapeHTML(text){
+/* =====================================================
+   CALIBRATION DATABASE
 
-  return text
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;");
+   今後TOPIA実機スクショとの比較結果は
+   基本的にここへ追加する。
+===================================================== */
 
+const calibration = {
+
+  normal:{
+    advance:0.93,
+    scaleX:1,
+    scaleY:1,
+    x:0,
+    y:0
+  },
+
+  "᭄":{
+    advance:0.52,
+    scaleX:0.72,
+    scaleY:1.18,
+    x:-9,
+    y:3
+  },
+
+  "ꦿ":{
+    advance:0.12,
+    scaleX:0.78,
+    scaleY:0.92,
+    x:-27,
+    y:10
+  },
+
+  "ૢ":{
+    advance:0.12,
+    scaleX:0.80,
+    scaleY:0.92,
+    x:-30,
+    y:12
+  },
+
+  "₈":{
+    advance:0.38,
+    scaleX:0.82,
+    scaleY:0.82,
+    x:-13,
+    y:18
+  },
+
+  "⁸":{
+    advance:0.38,
+    scaleX:0.82,
+    scaleY:0.82,
+    x:-11,
+    y:-25
+  },
+
+  "⃟":{
+    advance:0,
+    scaleX:1.05,
+    scaleY:1.05,
+    x:-20,
+    y:0
+  },
+
+  "꙰":{
+    advance:0,
+    scaleX:1,
+    scaleY:1,
+    x:-12,
+    y:-5
+  }
+
+};
+
+
+/* =====================================================
+   KNOWN TOPIA PATTERNS
+
+   単一文字補正だけでは再現しづらい
+   実機確認済みクラスタを登録。
+===================================================== */
+
+const knownPatterns = [
+
+  {
+    text:"ꦿૢ₈⁸",
+
+    chars:[
+      {char:"ꦿ",x:-27,y:8,sx:.78,sy:.92},
+      {char:"ૢ",x:-31,y:13,sx:.80,sy:.92},
+      {char:"₈",x:-9,y:17,sx:.82,sy:.82},
+      {char:"⁸",x:3,y:-25,sx:.82,sy:.82}
+    ],
+
+    advance:.70
+  }
+
+];
+
+
+/* =====================================================
+   COLOR
+===================================================== */
+
+function validColor(value){
+
+  if(/^#[0-9a-f]{3}$/i.test(value)){
+    return value;
+  }
+
+  if(/^#[0-9a-f]{6}$/i.test(value)){
+    return value;
+  }
+
+  return "#ffffff";
 }
 
 
-/* ======================================
-   TOPIA文字数 推定
-====================================== */
+/* =====================================================
+   TOPIA LENGTH ESTIMATE
+===================================================== */
 
-function estimateLength(str){
+function estimateLength(text){
 
-  let count=0;
+  let total=0;
 
-  for(const ch of Array.from(str)){
+  for(const ch of Array.from(text)){
 
-    const code=
+    const cp=
     ch.codePointAt(0);
 
-    /*
-      ASCII / 半角
-    */
-    if(code<=0x7f){
-
-      count+=0.5;
-
-    }else{
-
-      count+=1;
-
+    if(cp<=0x7f){
+      total+=0.5;
+    }
+    else{
+      total+=1;
     }
 
   }
 
-  return Math.round(count*10)/10;
-
+  return Math.round(total*10)/10;
 }
 
 
-/* ======================================
-   特殊Unicode判定
-====================================== */
+/* =====================================================
+   PARSER
+===================================================== */
 
-function specialClass(text){
+function parseCode(raw){
 
-  /*
-    TOPIAで大きく伸びる文字
-  */
-  if(text==="᭄"){
-    return "fx-long";
-  }
+  const tokens=[];
 
-  /*
-    装飾クラスタ
-  */
-  if(
-    text.includes("ꦿ") ||
-    text.includes("ૢ")
-  ){
-    return "fx-cluster";
-  }
+  let style={
+    size:40,
+    color:"#ffffff",
+    bold:false,
+    italic:false
+  };
 
-  /*
-    上付き数字
-  */
-  if(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/u.test(text)){
-    return "fx-super";
-  }
+  const stack=[];
 
-  /*
-    下付き
-  */
-  if(/[₀₁₂₃₄₅₆₇₈₉]/u.test(text)){
-    return "fx-sub";
-  }
-
-  /*
-    combining mark
-  */
-  if(/\p{M}/u.test(text)){
-    return "fx-combining";
-  }
-
-  return "";
-
-}
-
-
-/* ======================================
-   grapheme分割
-====================================== */
-
-function graphemes(text){
-
-  if(
-    typeof Intl!=="undefined" &&
-    Intl.Segmenter
-  ){
-
-    const segmenter=
-    new Intl.Segmenter(
-      "ja",
-      {granularity:"grapheme"}
-    );
-
-    return Array.from(
-      segmenter.segment(text),
-      x=>x.segment
-    );
-
-  }
-
-  return Array.from(text);
-
-}
-
-
-/* ======================================
-   通常テキスト描画
-====================================== */
-
-function textToHTML(text){
-
-  let html="";
-
-  const chars=
-  graphemes(text);
-
-  for(const ch of chars){
-
-    /*
-      TOPIA実機用
-      特殊クラスタ
-    */
-
-    let cls=
-    specialClass(ch);
-
-    html+=
-    '<span class="unit '+cls+'">'+
-    escapeHTML(ch)+
-    '</span>';
-
-  }
-
-  return html;
-
-}
-
-
-/* ======================================
-   parser
-====================================== */
-
-function parse(raw){
-
-  let output="";
-
-  let last=0;
-
-  const tag=
+  const regex=
   /(\\ua|<\/?b>|<\/?i>|<size=([^>]+)>|<\/size>|<color=([^>]+)>|<\/color>)/gi;
 
+  let last=0;
   let match;
 
+
+  function addText(text){
+
+    if(!text) return;
+
+    tokens.push({
+      type:"text",
+      text:text,
+      style:{...style}
+    });
+
+  }
+
+
   while(
-    (match=tag.exec(raw))!==null
+    (match=regex.exec(raw))!==null
   ){
 
-    const normalText=
-    raw.substring(
-      last,
-      match.index
+    addText(
+      raw.substring(
+        last,
+        match.index
+      )
     );
 
-    output+=
-    textToHTML(normalText);
-
-
-    const original=
+    const full=
     match[0];
 
     const lower=
-    original.toLowerCase();
+    full.toLowerCase();
 
-
-    /* \ua */
 
     if(lower==="\\ua"){
 
-      output+=
-      '<span class="topia-line"></span>';
+      tokens.push({
+        type:"newline"
+      });
 
     }
 
-
-    /* bold */
 
     else if(lower==="<b>"){
 
-      output+=
-      '<span class="topia-b">';
+      stack.push({
+        tag:"b",
+        style:{...style}
+      });
+
+      style.bold=true;
 
     }
+
 
     else if(lower==="</b>"){
 
-      output+=
-      "</span>";
+      restoreStyle(
+        stack,
+        "b",
+        style
+      );
 
     }
 
-
-    /* italic */
 
     else if(lower==="<i>"){
 
-      output+=
-      '<span class="topia-i">';
+      stack.push({
+        tag:"i",
+        style:{...style}
+      });
+
+      style.italic=true;
 
     }
+
 
     else if(lower==="</i>"){
 
-      output+=
-      "</span>";
+      restoreStyle(
+        stack,
+        "i",
+        style
+      );
 
     }
 
-
-    /* size */
 
     else if(
       lower.startsWith("<size=")
     ){
 
-      let size=
+      stack.push({
+        tag:"size",
+        style:{...style}
+      });
+
+      const n=
       parseFloat(match[2]);
 
-      if(isNaN(size)){
-        size=40;
+      if(!isNaN(n)){
+        style.size=n;
       }
 
-      /*
-        v10:
-        TOPIA size値をSafari pxへ変換
-
-        size80 → 約64px
-        size40 → 約32px
-      */
-
-      const px=
-      size*0.80;
-
-      output+=
-      '<span style="'+
-      'font-size:'+px+'px;'+
-      'line-height:1;'+
-      '">';
-
-    }
-
-    else if(
-      lower==="</size>"
-    ){
-
-      output+=
-      "</span>";
-
     }
 
 
-    /* color */
+    else if(lower==="</size>"){
+
+      restoreStyle(
+        stack,
+        "size",
+        style
+      );
+
+    }
+
 
     else if(
       lower.startsWith("<color=")
     ){
 
-      let color=
-      match[3];
+      stack.push({
+        tag:"color",
+        style:{...style}
+      });
 
-      if(
-        !/^#[0-9a-f]{3,8}$/i.test(color) &&
-        !/^[a-z]+$/i.test(color)
-      ){
-
-        color="#fff";
-
-      }
-
-      output+=
-      '<span style="color:'+
-      color+
-      '">';
+      style.color=
+      validColor(match[3]);
 
     }
 
-    else if(
-      lower==="</color>"
-    ){
 
-      output+=
-      "</span>";
+    else if(lower==="</color>"){
+
+      restoreStyle(
+        stack,
+        "color",
+        style
+      );
 
     }
 
 
     last=
-    tag.lastIndex;
+    regex.lastIndex;
 
   }
 
 
-  output+=
-  textToHTML(
+  addText(
     raw.substring(last)
   );
 
 
-  return output;
-
+  return tokens;
 }
 
 
-/* ======================================
-   TOPIA実機用追加補正
+/* =====================================================
+   STYLE STACK
+===================================================== */
 
-   DOM生成後に特殊文字同士の
-   相対位置を調整する。
-====================================== */
+function restoreStyle(
+  stack,
+  tag,
+  style
+){
 
-function calibrate(){
+  for(
+    let i=stack.length-1;
+    i>=0;
+    i--
+  ){
 
-  const units=
-  preview.querySelectorAll(".unit");
+    if(stack[i].tag===tag){
 
+      const old=
+      stack[i].style;
 
-  units.forEach(function(el){
+      style.size=
+      old.size;
 
-    const text=
-    el.textContent;
+      style.color=
+      old.color;
 
+      style.bold=
+      old.bold;
 
-    /*
-      ᭄
-    */
+      style.italic=
+      old.italic;
 
-    if(text==="᭄"){
+      stack.splice(i,1);
 
-      el.style.marginLeft=
-      "-0.22em";
-
-      el.style.marginRight=
-      "-0.08em";
-
+      return;
     }
+  }
+}
 
 
-    /*
-      ꦿ / ૢ
-    */
+/* =====================================================
+   CANVAS SETUP
+===================================================== */
 
-    if(
-      text.includes("ꦿ") ||
-      text.includes("ૢ")
-    ){
+function setupCanvas(){
 
-      el.style.marginLeft=
-      "-0.52em";
+  const rect=
+  stage.getBoundingClientRect();
 
-    }
+  const dpr=
+  window.devicePixelRatio || 1;
 
-  });
+  canvas.width=
+  Math.round(rect.width*dpr);
 
+  canvas.height=
+  Math.round(rect.height*dpr);
+
+  canvas.style.width=
+  rect.width+"px";
+
+  canvas.style.height=
+  rect.height+"px";
+
+  ctx.setTransform(
+    dpr,0,0,dpr,0,0
+  );
+
+  return {
+    width:rect.width,
+    height:rect.height
+  };
+}
+
+
+/* =====================================================
+   FONT
+===================================================== */
+
+function setFont(style){
 
   /*
-    連続する上付き数字は
-    TOPIA風に階段状へ寄せる
+    TOPIA size → Canvas px
+    基準倍率
   */
 
-  const supers=
-  preview.querySelectorAll(
-    ".fx-super"
+  const px=
+  style.size*0.80;
+
+  let font="";
+
+  if(style.italic){
+    font+="italic ";
+  }
+
+  if(style.bold){
+    font+="700 ";
+  }
+
+  font+=
+  px+
+  'px "Hiragino Sans","Hiragino Kaku Gothic ProN",sans-serif';
+
+  ctx.font=font;
+
+  ctx.textBaseline="alphabetic";
+
+  ctx.textAlign="left";
+
+  return px;
+}
+
+
+/* =====================================================
+   SHADOW / OUTLINE
+===================================================== */
+
+function drawGlyph(
+  char,
+  x,
+  y,
+  style,
+  sx=1,
+  sy=1
+){
+
+  ctx.save();
+
+  ctx.translate(x,y);
+
+  ctx.scale(sx,sy);
+
+  setFont(style);
+
+  ctx.fillStyle=
+  style.color;
+
+  /*
+    TOPIAスクショで見える
+    黒系シャドウを近似
+  */
+
+  ctx.shadowColor=
+  "rgba(0,0,0,.85)";
+
+  ctx.shadowBlur=2;
+
+  ctx.shadowOffsetX=1.5;
+
+  ctx.shadowOffsetY=3;
+
+  ctx.fillText(
+    char,
+    0,
+    0
   );
 
-  supers.forEach(
-    function(el,index){
+  ctx.restore();
+}
 
-      if(index%2===1){
 
-        el.style.transform=
-        "translate(-.18em,.10em) scale(.78)";
+/* =====================================================
+   KNOWN PATTERN SEARCH
+===================================================== */
 
-      }
+function findKnownPattern(
+  text,
+  index
+){
+
+  for(
+    const pattern
+    of knownPatterns
+  ){
+
+    if(
+      text.startsWith(
+        pattern.text,
+        index
+      )
+    ){
+      return pattern;
+    }
+  }
+
+  return null;
+}
+
+
+/* =====================================================
+   DRAW KNOWN PATTERN
+===================================================== */
+
+function drawKnownPattern(
+  pattern,
+  x,
+  y,
+  style,
+  fontSize
+){
+
+  for(
+    const part
+    of pattern.chars
+  ){
+
+    drawGlyph(
+      part.char,
+      x + part.x*(fontSize/64),
+      y + part.y*(fontSize/64),
+      style,
+      part.sx,
+      part.sy
+    );
+
+  }
+
+  return(
+    fontSize*
+    pattern.advance
+  );
+}
+
+
+/* =====================================================
+   DRAW TEXT TOKEN
+===================================================== */
+
+function drawTextToken(
+  token,
+  startX,
+  baseline
+){
+
+  let x=startX;
+
+  const style=
+  token.style;
+
+  const fontSize=
+  setFont(style);
+
+  const chars=
+  Array.from(token.text);
+
+
+  for(
+    let i=0;
+    i<chars.length;
+    i++
+  ){
+
+    /*
+      まず実機確認済みクラスタを探す
+    */
+
+    const remaining=
+    chars.slice(i).join("");
+
+    const pattern=
+    findKnownPattern(
+      remaining,
+      0
+    );
+
+
+    if(pattern){
+
+      x+=drawKnownPattern(
+        pattern,
+        x,
+        baseline,
+        style,
+        fontSize
+      );
+
+      i+=
+      Array.from(
+        pattern.text
+      ).length-1;
+
+      continue;
+    }
+
+
+    const ch=
+    chars[i];
+
+    const rule=
+    calibration[ch] ||
+    calibration.normal;
+
+
+    setFont(style);
+
+    const measured=
+    ctx.measureText(ch).width;
+
+
+    /*
+      combining mark は
+      advanceを持たせない
+    */
+
+    const combining=
+    /\p{M}/u.test(ch);
+
+
+    drawGlyph(
+      ch,
+
+      x+
+      rule.x*
+      (fontSize/64),
+
+      baseline+
+      rule.y*
+      (fontSize/64),
+
+      style,
+
+      rule.scaleX,
+
+      rule.scaleY
+    );
+
+
+    if(combining){
+
+      continue;
+    }
+
+
+    if(
+      calibration[ch]
+    ){
+
+      x+=
+      fontSize*
+      rule.advance;
 
     }
-  );
+    else{
+
+      x+=
+      measured*
+      rule.advance;
+
+    }
+
+  }
+
+
+  return x;
+}
+
+
+/* =====================================================
+   DRAW TOKENS
+===================================================== */
+
+function drawTokens(tokens){
+
+  /*
+    TOPIAスクショを基準に
+    左側から開始
+  */
+
+  const startX=48;
+
+  let x=startX;
+
+  let baseline=205;
+
+
+  for(const token of tokens){
+
+    if(token.type==="newline"){
+
+      x=startX;
+
+      baseline+=68;
+
+      continue;
+    }
+
+
+    if(token.type==="text"){
+
+      x=
+      drawTextToken(
+        token,
+        x,
+        baseline
+      );
+
+    }
+
+  }
 
 }
 
 
-/* ======================================
-   render
-====================================== */
+/* =====================================================
+   RENDER
+===================================================== */
 
 function render(){
 
   const raw=
   input.value;
 
+  const size=
+  setupCanvas();
 
-  if(!raw){
-
-    preview.innerHTML="";
-
-    counter.textContent=
-    "推定：0 / 50";
-
-    warning.textContent="";
-
-    return;
-
-  }
-
-
-  preview.innerHTML=
-  parse(raw);
-
-
-  calibrate();
+  ctx.clearRect(
+    0,
+    0,
+    size.width,
+    size.height
+  );
 
 
   const count=
   estimateLength(raw);
-
 
   counter.textContent=
   "推定："+count+" / 50";
@@ -961,20 +1075,38 @@ function render(){
 
   }
 
+
+  if(!raw){
+    return;
+  }
+
+
+  const tokens=
+  parseCode(raw);
+
+  drawTokens(tokens);
+
 }
 
 
-/* ======================================
-   events
-====================================== */
+/* =====================================================
+   EVENTS
+===================================================== */
 
 input.addEventListener(
   "input",
   render
 );
 
+window.addEventListener(
+  "resize",
+  render
+);
 
-/* copy */
+
+/* =====================================================
+   COPY
+===================================================== */
 
 document
 .getElementById("copy")
@@ -1020,7 +1152,9 @@ async function(){
 });
 
 
-/* clear */
+/* =====================================================
+   CLEAR
+===================================================== */
 
 document
 .getElementById("clear")
@@ -1037,7 +1171,9 @@ function(){
 });
 
 
-/* first render */
+/* =====================================================
+   START
+===================================================== */
 
 render();
 
